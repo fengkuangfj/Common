@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "CommonPublic.h"
 #include "CommonNtDefine.h"
 
 #ifndef Common_lib

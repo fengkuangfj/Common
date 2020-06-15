@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CommonPublic.h"
-#include <windows.h>
+
 #include <winternl.h>
 
 #ifndef _Out_writes_bytes_
