@@ -24,6 +24,15 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CommonNtDefine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonApi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonPublic.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
