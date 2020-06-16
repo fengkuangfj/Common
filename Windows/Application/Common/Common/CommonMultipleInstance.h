@@ -24,10 +24,10 @@ protected:
 
     VOID
         SetInitFlag(
-        _In_ CONST BOOL bInitFlag
+        _In_ CONST BOOL & bFlag
         )
     {
-        m_bInitFlag = bInitFlag;
+        m_bInitFlag = bFlag;
 
         return;
     }
