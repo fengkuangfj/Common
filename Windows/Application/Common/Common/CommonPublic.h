@@ -11,3 +11,15 @@
 
 #include <winsock2.h>
 #include <windows.h>
+
+#if 0
+COMMON_ERROR CommonError = COMMON_ERROR_DEFAULT;
+
+
+do
+{
+    CommonError = COMMON_ERROR_SUCCESS;
+} while (FALSE);
+
+return CommonError;
+#endif

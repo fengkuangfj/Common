@@ -33,9 +33,36 @@
     <ClInclude Include="CommonPublic.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CommonError.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonStruct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonNickname.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonMultipleInstance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonSingleInstance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonHookEnv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonAvoidReentry.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonHookEnv.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonAvoidReentry.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

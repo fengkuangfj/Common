@@ -1,0 +1,8 @@
+
+#pragma once
+
+typedef enum _COMMON_ERROR
+{
+    COMMON_ERROR_DEFAULT = -1,
+    COMMON_ERROR_SUCCESS
+} COMMON_ERROR;
