@@ -54,6 +54,45 @@
     <ClInclude Include="CommonAvoidReentry.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CommonLog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonEnum.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonIp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonMacro.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonModule.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonOperationSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonProcess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonService.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonTool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonSession.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonNtHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonGlobalVariable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonStringConvert.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,6 +102,36 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CommonAvoidReentry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonLog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonTool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonService.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonOperationSystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonModule.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonIp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonProcess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonSession.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonNtHelper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonStringConvert.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -18,4 +18,4 @@ typedef struct _COMMON_HOOK_INFO
         pNewAddress = NULL;
         ppOldAddress = NULL;
     }
-} COMMON_HOOK_INFO;
+} COMMON_HOOK_INFO, *PCOMMON_HOOK_INFO;

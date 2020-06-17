@@ -4,13 +4,26 @@
 #include "CommonPublic.h"
 
 #include "CommonAvoidReentry.h"
+#include "CommonEnum.h"
 #include "CommonError.h"
+#include "CommonGlobalVariable.h"
 #include "CommonHookEnv.h"
+#include "CommonIp.h"
+#include "CommonLog.h"
+#include "CommonMacro.h"
+#include "CommonModule.h"
 #include "CommonMultipleInstance.h"
 #include "CommonNickname.h"
 #include "CommonNtDefine.h"
+#include "CommonOperationSystem.h"
+#include "CommonProcess.h"
+#include "CommonService.h"
+#include "CommonSession.h"
 #include "CommonSingleInstance.h"
+#include "CommonStringConvert.h"
 #include "CommonStruct.h"
+#include "CommonTool.h"
+#include "CommonNtHelper.h"
 
 #ifndef Common_lib
 #ifdef _DEBUG
