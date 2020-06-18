@@ -27,7 +27,7 @@ COMMON_ERROR
                 CommonError = CCommonService::GetInstance()->Init();
                 if (COMMON_ERROR_SUCCESS != CommonError)
                 {
-                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"Init failed. CommonError(%d)", CommonError);
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonService::GetInstance()->Init failed. CommonError(%d)", CommonError);
                     break;
                 }
 
@@ -94,11 +94,6 @@ COMMON_ERROR
         CommonError = COMMON_ERROR_SUCCESS;
     } while (FALSE);
 
-    if (COMMON_ERROR_SUCCESS != CommonError)
-    {
-        CommonError = Unload();
-    }
-
     return CommonError;
 }
 
@@ -120,17 +115,17 @@ COMMON_ERROR CCommonLog::Unload()
                     m_hFile = INVALID_HANDLE_VALUE;
                 }
 
-                CommonError = CCommonService::GetInstance()->Unload();
-                if (COMMON_ERROR_SUCCESS != CommonError)
-                {
-                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"Unload failed. CommonError(%d)", CommonError);
-                }
-
                 if (m_bInitializeCriticalSection)
                 {
                     m_bInitializeCriticalSection = FALSE;
 
                     DeleteCriticalSection(&m_WriteLock);
+                }
+
+                CommonError = CCommonService::GetInstance()->Unload();
+                if (COMMON_ERROR_SUCCESS != CommonError)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonService::GetInstance()->Unload failed. CommonError(%d)", CommonError);
                 }
 
                 SetInitFlag(FALSE);
@@ -252,7 +247,7 @@ VOID
                         wstrText += L"\r\n";
                         wstrText += CCommonTool::GetInstance()->ToWstring(GetCurrentProcessId());
 
-                        CCommonService::GetInstance()->MessageBoxForServiceW(wstrText, L"Common_LOG_LEVEL_ERROR", MB_OK);
+                        CCommonService::GetInstance()->MessageBoxForServiceW(wstrText, L"COMMON_LOG_LEVEL_ERROR", MB_OK);
                     }
                     else
                     {
@@ -390,7 +385,7 @@ VOID
                         wstrText += L"\r\n";
                         wstrText += CCommonTool::GetInstance()->ToWstring(GetCurrentProcessId());
 
-                        CCommonService::GetInstance()->MessageBoxForServiceW(wstrText, L"Common_LOG_LEVEL_ERROR", MB_OK);
+                        CCommonService::GetInstance()->MessageBoxForServiceW(wstrText, L"COMMON_LOG_LEVEL_ERROR", MB_OK);
                     }
                     else
                     {
@@ -585,6 +580,11 @@ std::wstring
     do
     {
         wstrRet = CSsDedsPath::GetInstance()->GetPath(COMMON_PATH_TYPE_LOG_DIR);
+        if (!wstrRet.length())
+        {
+            break;
+        }
+
         wstrRet += L"\\";
         wstrRet += m_wstrProcessName;
 
@@ -714,7 +714,7 @@ VOID
             {
                 if (!PathYetAnotherMakeUniqueName(wchTempPath, wstrBasePath.c_str(), NULL, PathFindFileName(wstrBasePath.c_str())))
                 {
-                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"PathYetAnotherMakeUniqueName (%s) failed. msdn(%d)", wstrBasePath.c_str(), GetLastError());
+                    // COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"PathYetAnotherMakeUniqueName (%s) failed. msdn(%d)", wstrBasePath.c_str(), GetLastError());
                     continue;
                 }
 
@@ -723,20 +723,20 @@ VOID
                 {
                     if (COMMON_ERROR_CREATE_DIRECTORY_FAILED == CommonError)
                     {
-                        COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"(%s) CSsDedsPath::GetInstance()->MakeSureParentExist failed. CommonError(%d)", wchTempPath, CommonError);
+                        COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"CreateFile (%s) failed. CommonError(%d)", wchTempPath, CommonError);
                         break;
                     }
                     else
                     {
-                        COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"(%s) CSsDedsPath::GetInstance()->MakeSureParentExist failed. CommonError(%d)", wchTempPath, CommonError);
+                        // COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CreateFile (%s) failed. CommonError(%d)", wchTempPath, CommonError);
                         continue;
                     }
                 }
 
+                m_wstrLogPath = wchTempPath;
+
                 break;
             } while (TRUE);
-
-            m_wstrLogPath = wchTempPath;
         }
     } while (FALSE);
 
@@ -767,11 +767,11 @@ COMMON_ERROR
         {
             if (COMMON_ERROR_CREATE_DIRECTORY_FAILED == CommonError)
             {
-                COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"(%s) CSsDedsPath::GetInstance()->MakeSureParentExist failed. CommonError(%d)", m_wstrLogPath.c_str(), CommonError);
+                COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"CSsDedsPath::GetInstance()->MakeSureParentExist (%s) failed. CommonError(%d)", wstrPath.c_str(), CommonError);
             }
             else
             {
-                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"(%s) CSsDedsPath::GetInstance()->MakeSureParentExist failed. CommonError(%d)", m_wstrLogPath.c_str(), CommonError);
+                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CSsDedsPath::GetInstance()->MakeSureParentExist (%s) failed. CommonError(%d)", wstrPath.c_str(), CommonError);
             }
 
             m_LogCreateFileStatus = COMMON_LOG_CREATE_FILE_STATUS_FAILED;
@@ -810,11 +810,11 @@ COMMON_ERROR
         {
             if (ERROR_ACCESS_DENIED != GetLastError())
             {
-                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CreateFile (%s) failed. msdn(%d)", m_wstrLogPath.c_str(), GetLastError());
+                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CreateFile (%s) failed. msdn(%d)", wstrTempPath.c_str(), GetLastError());
             }
             else
             {
-                COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"CreateFile (%s) failed. msdn(%d)", m_wstrLogPath.c_str(), GetLastError());
+                COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"CreateFile (%s) failed. msdn(%d)", wstrTempPath.c_str(), GetLastError());
             }
 
             m_LogCreateFileStatus = COMMON_LOG_CREATE_FILE_STATUS_FAILED;
