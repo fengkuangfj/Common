@@ -2,7 +2,7 @@
 #pragma once
 
 #ifndef MAX_PATH
-#define MAX_PATH 260
+#define MAX_PATH (260)
 #endif
 
 #ifndef COMMON_MAX_PATH

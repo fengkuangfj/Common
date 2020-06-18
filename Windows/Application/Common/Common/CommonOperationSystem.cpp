@@ -19,12 +19,20 @@ COMMON_ERROR
             CommonWriteLock lock(ms_InitFlagLock);
             if (!GetInitFlag())
             {
+                CommonError = CCommonNtHelper::GetInstance()->Init();
+                if (COMMON_ERROR_SUCCESS != CommonError)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonNtHelper::GetInstance()->Init failed. CommonError(%d)", CommonError);
+                    break;
+                }
+
                 CCommonNtHelper::GetInstance()->RtlGetNtVersionNumbers(&dwMajorVersion, &dwMinorVersion, &dwBuildNumber);
                 m_VersionNumber = (float)dwMajorVersion + (float)dwMinorVersion / 10;
 
                 OsVersionInfoEx.dwOSVersionInfoSize = sizeof(OsVersionInfoEx);
                 if (!GetVersionEx((LPOSVERSIONINFO)&OsVersionInfoEx))
                 {
+                    CommonError = COMMON_ERROR_GET_VERSION_FAILED;
                     COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"GetVersionEx failed. msdn(%d)", GetLastError());
                     break;
                 }
@@ -38,11 +46,6 @@ COMMON_ERROR
 
         CommonError = COMMON_ERROR_SUCCESS;
     } while (FALSE);
-
-    if (COMMON_ERROR_SUCCESS != CommonError)
-    {
-        CommonError = Unload();
-    }
 
     return CommonError;
 }
@@ -60,6 +63,12 @@ COMMON_ERROR
             CommonWriteLock lock(ms_InitFlagLock);
             if (GetInitFlag())
             {
+                CommonError = CCommonNtHelper::GetInstance()->Unload();
+                if (COMMON_ERROR_SUCCESS != CommonError)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonNtHelper::GetInstance()->Unload failed. CommonError(%d)", CommonError);
+                }
+
                 SetInitFlag(FALSE);
             }
         }
@@ -438,13 +447,13 @@ BOOL
 {
     BOOL bRet = FALSE;
 
+
     do
     {
-        if ( fabs(m_VersionNumber-5.1) <= EPSILON)
+        if (EPSILON >= fabs(m_VersionNumber-5.1))
         {
             bRet = TRUE;
         }
-
     } while (FALSE);
 
     return bRet;

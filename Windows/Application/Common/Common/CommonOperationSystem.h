@@ -4,8 +4,8 @@
 #include "CommonPublic.h"
 
 #include "CommonLog.h"
-#include "CommonSingleInstance.h"
 #include "CommonNtHelper.h"
+#include "CommonSingleInstance.h"
 
 class CCommonOperationSystem : public CCommonSingleInstance<CCommonOperationSystem>
 {

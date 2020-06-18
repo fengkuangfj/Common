@@ -18,10 +18,7 @@ BOOL
         }
 
         bRet = (0 < m_AvoidReentryInfos[dwCurrentTid]);
-#pragma warning(push)
-#pragma warning(disable : 4127)
     } while (FALSE);
-#pragma warning(pop)
 
     FreeLock(dwCurrentTid);
 
@@ -41,10 +38,7 @@ BOOL
         GetLock(dwCurrentTid);
 
         bRet = (1 < m_AvoidReentryInfos[dwCurrentTid]);
-#pragma warning(push)
-#pragma warning(disable : 4127)
     } while (FALSE);
-#pragma warning(pop)
 
     FreeLock(dwCurrentTid);
 
@@ -69,10 +63,7 @@ VOID
         {
             m_AvoidReentryInfos[dwCurrentTid] = 1;
         }
-#pragma warning(push)
-#pragma warning(disable : 4127)
     } while (FALSE);
-#pragma warning(pop)
 
     FreeLock(dwCurrentTid);
 
@@ -99,10 +90,7 @@ VOID
         {
             m_AvoidReentryInfos[dwTid] = 1;
         }
-#pragma warning(push)
-#pragma warning(disable : 4127)
     } while (FALSE);
-#pragma warning(pop)
 
     FreeLock(dwCurrentTid);
 
@@ -123,10 +111,7 @@ VOID
         {
             --(m_AvoidReentryInfos[dwCurrentTid]);
         }
-#pragma warning(push)
-#pragma warning(disable : 4127)
     } while (FALSE);
-#pragma warning(pop)
 
     FreeLock(dwCurrentTid);
 
@@ -149,10 +134,7 @@ VOID
         {
             --(m_AvoidReentryInfos[dwTid]);
         }
-#pragma warning(push)
-#pragma warning(disable : 4127)
     } while (FALSE);
-#pragma warning(pop)
 
     FreeLock(dwCurrentTid);
 
@@ -182,10 +164,11 @@ BOOL
 
     LONG lResult = 0;
 
-    dwCurrentTid = GetCurrentThreadId();
 
     do
     {
+        dwCurrentTid = GetCurrentThreadId();
+
         lResult = InterlockedCompareExchange(&m_lTidGetedLock, (LONG)dwCurrentTid, 0);
         if (0 == lResult)
         {
@@ -202,15 +185,8 @@ BOOL
                 InterlockedIncrement(&m_lLockRef);
                 break;
             }
-            else
-            {
-                Sleep(1);
-            }
         }
-#pragma warning(push)
-#pragma warning(disable : 4127)
     } while (TRUE);
-#pragma warning(pop)
 
     return bRet;
 }
@@ -220,10 +196,13 @@ VOID
     _In_ CONST DWORD & dwCurrentTid
     )
 {
-    if (0 == InterlockedDecrement(&m_lLockRef))
+    do
     {
-        InterlockedCompareExchange(&m_lTidGetedLock, 0, (LONG)dwCurrentTid);
-    }
+        if (0 == InterlockedDecrement(&m_lLockRef))
+        {
+            InterlockedCompareExchange(&m_lTidGetedLock, 0, (LONG)dwCurrentTid);
+        }
+    } while (FALSE);
 
     return;
 }

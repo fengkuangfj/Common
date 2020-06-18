@@ -18,30 +18,29 @@ COMMON_ERROR
                 if (NULL == m_hNtdll_dll)
                 {
                     CommonError = COMMON_ERROR_GET_MODULE_HANDLE_FAILED;
-                    COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetModuleHandle (%s) failed. msdn(%d)", L"ntdll.dll", GetLastError());
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"GetModuleHandle (%s) failed. msdn(%d)", L"ntdll.dll", GetLastError());
+                    break;
                 }
-                else
+
+                m_Ntdll_dll_NtQueryObject = (Ntdll_dll_NtQueryObject_Proc_Type)GetProcAddress(m_hNtdll_dll, "NtQueryObject");
+                if (NULL == m_Ntdll_dll_NtQueryObject)
                 {
-                    m_Ntdll_dll_NtQueryObject = (Ntdll_dll_NtQueryObject_Proc_Type)GetProcAddress(m_hNtdll_dll, "NtQueryObject");
-                    if (NULL == m_Ntdll_dll_NtQueryObject)
-                    {
-                        CommonError = COMMON_ERROR_GET_PROC_ADDRESS_FAILED;
-                        COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"NtQueryObject", GetLastError());
-                    }
+                    CommonError = COMMON_ERROR_GET_PROC_ADDRESS_FAILED;
+                    COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"NtQueryObject", GetLastError());
+                }
 
-                    m_Ntdll_dll_NtQueryInformationFile = (Ntdll_dll_NtQueryInformationFile_Proc_Type)GetProcAddress(m_hNtdll_dll, "NtQueryInformationFile");
-                    if (NULL == m_Ntdll_dll_NtQueryInformationFile)
-                    {
-                        CommonError = COMMON_ERROR_GET_PROC_ADDRESS_FAILED;
-                        COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"NtQueryInformationFile", GetLastError());
-                    }
+                m_Ntdll_dll_NtQueryInformationFile = (Ntdll_dll_NtQueryInformationFile_Proc_Type)GetProcAddress(m_hNtdll_dll, "NtQueryInformationFile");
+                if (NULL == m_Ntdll_dll_NtQueryInformationFile)
+                {
+                    CommonError = COMMON_ERROR_GET_PROC_ADDRESS_FAILED;
+                    COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"NtQueryInformationFile", GetLastError());
+                }
 
-                    m_Ntdll_dll_RtlGetNtVersionNumbers = (Ntdll_dll_RtlGetNtVersionNumbers_Proc_Type)GetProcAddress(m_hNtdll_dll, "RtlGetNtVersionNumbers");
-                    if (NULL == m_Ntdll_dll_RtlGetNtVersionNumbers)
-                    {
-                        CommonError = COMMON_ERROR_GET_PROC_ADDRESS_FAILED;
-                        COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"RtlGetNtVersionNumbers", GetLastError());
-                    }
+                m_Ntdll_dll_RtlGetNtVersionNumbers = (Ntdll_dll_RtlGetNtVersionNumbers_Proc_Type)GetProcAddress(m_hNtdll_dll, "RtlGetNtVersionNumbers");
+                if (NULL == m_Ntdll_dll_RtlGetNtVersionNumbers)
+                {
+                    CommonError = COMMON_ERROR_GET_PROC_ADDRESS_FAILED;
+                    COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"RtlGetNtVersionNumbers", GetLastError());
                 }
 
                 SetInitFlag(TRUE);

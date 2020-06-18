@@ -21,18 +21,24 @@ void
     )
 {
     m_dwErrorCode = dwErrorCode;
+
+    return;
 }
 
 void
     CCommonHookEnv::Store()
 {
     m_dwErrorCode = GetLastError();
+
+    return;
 }
 
 void
     CCommonHookEnv::Restore()
 {
     SetLastError(m_dwErrorCode);
+
+    return;
 }
 
 DWORD

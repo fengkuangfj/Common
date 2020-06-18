@@ -15,6 +15,7 @@
 #include "CommonMultipleInstance.h"
 #include "CommonNickname.h"
 #include "CommonNtDefine.h"
+#include "CommonNtHelper.h"
 #include "CommonOperationSystem.h"
 #include "CommonProcess.h"
 #include "CommonService.h"
@@ -23,7 +24,6 @@
 #include "CommonStringConvert.h"
 #include "CommonStruct.h"
 #include "CommonTool.h"
-#include "CommonNtHelper.h"
 
 #ifndef Common_lib
 #ifdef _DEBUG
