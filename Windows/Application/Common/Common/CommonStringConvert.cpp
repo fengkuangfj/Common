@@ -1,14 +1,5 @@
 
 #include "CommonStringConvert.h"
-// #pragma warning(push)
-// #pragma warning(disable : 4005)
-// #pragma warning(disable : 4100)
-// #pragma warning(disable : 4189)
-// #pragma warning(disable : 6387)
-// #include <atlenc.h>
-// #pragma warning(pop)
-//
-// #include <boost/regex.hpp>
 
 std::wstring
     CCommonStringConvert::AnsiToWideChar(

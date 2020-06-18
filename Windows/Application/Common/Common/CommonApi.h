@@ -17,6 +17,7 @@
 #include "CommonNtDefine.h"
 #include "CommonNtHelper.h"
 #include "CommonOperationSystem.h"
+#include "CommonPath.h"
 #include "CommonProcess.h"
 #include "CommonService.h"
 #include "CommonSession.h"

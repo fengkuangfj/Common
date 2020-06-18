@@ -9,8 +9,9 @@
 #include "CommonSingleInstance.h"
 
 #include <wtsapi32.h>
-//
-// #pragma comment(lib, "Wtsapi32.lib")
+
+#pragma comment(lib, "Advapi32.lib")
+#pragma comment(lib, "Wtsapi32.lib")
 
 class CCommonService : public CCommonSingleInstance<CCommonService>
 {

@@ -3,9 +3,6 @@
 
 #include "CommonPublic.h"
 
-// #include "CommonNickname.h"
-// #include "CommonNtDefine.h"
-
 typedef struct _COMMON_HOOK_INFO
 {
     LPSTR lpProcName;

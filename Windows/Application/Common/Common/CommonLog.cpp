@@ -24,6 +24,13 @@ COMMON_ERROR
                 InitializeCriticalSection(&m_WriteLock);
                 m_bInitializeCriticalSection = TRUE;
 
+                CommonError = CCommonPath::GetInstance()->Init();
+                if (COMMON_ERROR_SUCCESS != CommonError)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonPath::GetInstance()->Init failed. CommonError(%d)", CommonError);
+                    break;
+                }
+
                 CommonError = CCommonService::GetInstance()->Init();
                 if (COMMON_ERROR_SUCCESS != CommonError)
                 {
@@ -126,6 +133,12 @@ COMMON_ERROR CCommonLog::Unload()
                 if (COMMON_ERROR_SUCCESS != CommonError)
                 {
                     COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonService::GetInstance()->Unload failed. CommonError(%d)", CommonError);
+                }
+
+                CommonError = CCommonPath::GetInstance()->Unload();
+                if (COMMON_ERROR_SUCCESS != CommonError)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonPath::GetInstance()->Unload failed. CommonError(%d)", CommonError);
                 }
 
                 SetInitFlag(FALSE);
@@ -579,7 +592,7 @@ std::wstring
 
     do
     {
-        wstrRet = CSsDedsPath::GetInstance()->GetPath(COMMON_PATH_TYPE_LOG_DIR);
+        wstrRet = CCommonPath::GetInstance()->GetPath(COMMON_PATH_TYPE_LOG_DIR);
         if (!wstrRet.length())
         {
             break;
@@ -762,16 +775,16 @@ COMMON_ERROR
 
     do
     {
-        CommonError = CSsDedsPath::GetInstance()->MakeSureParentExist(wstrPath);
+        CommonError = CCommonPath::GetInstance()->MakeSureParentExist(wstrPath);
         if (COMMON_ERROR_SUCCESS != CommonError)
         {
             if (COMMON_ERROR_CREATE_DIRECTORY_FAILED == CommonError)
             {
-                COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"CSsDedsPath::GetInstance()->MakeSureParentExist (%s) failed. CommonError(%d)", wstrPath.c_str(), CommonError);
+                COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"CCommonPath::GetInstance()->MakeSureParentExist (%s) failed. CommonError(%d)", wstrPath.c_str(), CommonError);
             }
             else
             {
-                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CSsDedsPath::GetInstance()->MakeSureParentExist (%s) failed. CommonError(%d)", wstrPath.c_str(), CommonError);
+                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonPath::GetInstance()->MakeSureParentExist (%s) failed. CommonError(%d)", wstrPath.c_str(), CommonError);
             }
 
             m_LogCreateFileStatus = COMMON_LOG_CREATE_FILE_STATUS_FAILED;

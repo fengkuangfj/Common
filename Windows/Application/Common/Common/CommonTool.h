@@ -8,18 +8,7 @@
 
 #include <Objbase.h>
 
-//
-// #include <aclapi.h>
-// #include <sddl.h>
-// #include <shellapi.h>
-// #include <vector>
-// #include <list>
-//
-// #ifndef SECURITY_WIN32
-// #define SECURITY_WIN32
-// #endif // SECURITY_WIN32
-// #include <Security.h>
-// #pragma comment(lib, "Secur32.lib")
+#pragma comment(lib, "Ole32.lib")
 
 class CCommonTool : public CCommonSingleInstance<CCommonTool>
 {

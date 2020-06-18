@@ -7,6 +7,7 @@
 #include "CommonError.h"
 #include "CommonGlobalVariable.h"
 #include "CommonIp.h"
+#include "CommonPath.h"
 #include "CommonProcess.h"
 #include "CommonService.h"
 #include "CommonSingleInstance.h"
@@ -16,6 +17,9 @@
 #include <Shlobj.h>
 #include <shlwapi.h>
 #include <strsafe.h>
+
+#pragma comment(lib, "Shell32.lib")
+#pragma comment(lib, "Shlwapi.lib")
 
 #define COMMON_LOGA(LogLevel, Format, ...) CCommonLog::GetInstance()->Log(LogLevel, __FILE__, __LINE__, __FUNCTION__, Format, __VA_ARGS__)
 #define COMMON_LOGW(LogLevel, Format, ...) CCommonLog::GetInstance()->Log(LogLevel, __FILEW__, __LINE__, _CRT_WIDE(__FUNCTION__), Format, __VA_ARGS__)

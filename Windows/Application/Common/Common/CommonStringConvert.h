@@ -6,9 +6,6 @@
 #include "CommonLog.h"
 #include "CommonSingleInstance.h"
 
-//
-// #include <vector>
-
 class CCommonStringConvert : public CCommonSingleInstance<CCommonStringConvert>
 {
     friend class CCommonSingleInstance<CCommonStringConvert>;
