@@ -42,21 +42,21 @@ public:
 
     VOID
         Log(
-        _In_ CONST COMMON_LOG_LEVEL & LogLevel,
-        _In_ CONST PCHAR & pFile,
-        _In_ CONST ULONG & ulLine,
-        _In_ CONST PCHAR & pFunction,
-        _In_ _Printf_format_string_ CONST PCHAR & pFormat,
+        _In_ CONST COMMON_LOG_LEVEL LogLevel,
+        _In_ CONST PCHAR pFile,
+        _In_ CONST ULONG ulLine,
+        _In_ CONST PCHAR pFunction,
+        _In_ _Printf_format_string_ CONST PCHAR pFormat,
         ...
         );
 
     VOID
         Log(
-        _In_ CONST COMMON_LOG_LEVEL & LogLevel,
-        _In_ CONST PWCHAR & pFile,
-        _In_ CONST ULONG & ulLine,
-        _In_ CONST PWCHAR & pFunction,
-        _In_ _Printf_format_string_ CONST PWCHAR & pFormat,
+        _In_ CONST COMMON_LOG_LEVEL LogLevel,
+        _In_ CONST PWCHAR pFile,
+        _In_ CONST ULONG ulLine,
+        _In_ CONST PWCHAR pFunction,
+        _In_ _Printf_format_string_ CONST PWCHAR pFormat,
         ...
         );
 
