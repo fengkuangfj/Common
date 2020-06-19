@@ -31,8 +31,12 @@ public:
         _In_ CONST COMMON_PATH_TYPE & CommonPathType
         );
 
+    std::wstring
+        ToLong(
+        _In_ CONST std::wstring & wstrPath
+        );
+
 private:
-    std::wstring m_wstrSystemRoot;
     std::wstring m_wstrTempDir;
 
     CCommonPath();

@@ -36,6 +36,15 @@ public:
         _In_ FILE_INFORMATION_CLASS FileInformationClass
         );
 
+    NTSTATUS
+        NtQueryInformationProcess(
+        __in HANDLE ProcessHandle,
+        __in PROCESSINFOCLASS ProcessInformationClass,
+        __out PVOID ProcessInformation,
+        __in ULONG ProcessInformationLength,
+        __out_opt PULONG ReturnLength
+        );
+
     VOID
         RtlGetNtVersionNumbers(
         DWORD * dwMajorVersion,
@@ -47,6 +56,7 @@ private:
     HMODULE m_hNtdll_dll;
     Ntdll_dll_NtQueryObject_Proc_Type m_Ntdll_dll_NtQueryObject;
     Ntdll_dll_NtQueryInformationFile_Proc_Type m_Ntdll_dll_NtQueryInformationFile;
+    Ntdll_dll_NtQueryInformationProcess_Proc_Type m_Ntdll_dll_NtQueryInformationProcess;
     Ntdll_dll_RtlGetNtVersionNumbers_Proc_Type m_Ntdll_dll_RtlGetNtVersionNumbers;
 
     CCommonNtHelper();

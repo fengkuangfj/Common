@@ -4,9 +4,8 @@
 COMMON_ERROR
     CCommonPath::Init()
 {
-    COMMON_ERROR SsDedsError = COMMON_ERROR_DEFAULT;
+    COMMON_ERROR CommonError = COMMON_ERROR_DEFAULT;
 
-    WCHAR wchSystemRoot[COMMON_MAX_PATH] = {0};
     WCHAR wchTempDir[COMMON_MAX_PATH] = {0};
 
 
@@ -17,20 +16,6 @@ COMMON_ERROR
             CommonWriteLock lock(ms_InitFlagLock);
             if (!GetInitFlag())
             {
-                if (0 == GetWindowsDirectory(wchSystemRoot, _countof(wchSystemRoot)))
-                {
-                    m_wstrSystemRoot = L"C:\\Windows";
-                }
-                else
-                {
-                    if (L'\\' == wchSystemRoot[wcslen(wchSystemRoot) - 1])
-                    {
-                        wchSystemRoot[wcslen(wchSystemRoot) - 1] = L'\0';
-                    }
-
-                    m_wstrSystemRoot = wchSystemRoot;
-                }
-
                 if (0 == GetTempPath(_countof(wchTempDir), wchTempDir))
                 {
                     m_wstrTempDir = L"C:\\Temp";
@@ -49,16 +34,16 @@ COMMON_ERROR
             }
         }
 
-        SsDedsError = COMMON_ERROR_SUCCESS;
+        CommonError = COMMON_ERROR_SUCCESS;
     } while (FALSE);
 
-    return SsDedsError;
+    return CommonError;
 }
 
 COMMON_ERROR
     CCommonPath::Unload()
 {
-    COMMON_ERROR SsDedsError = COMMON_ERROR_DEFAULT;
+    COMMON_ERROR CommonError = COMMON_ERROR_DEFAULT;
 
 
     do
@@ -72,10 +57,10 @@ COMMON_ERROR
             }
         }
 
-        SsDedsError = COMMON_ERROR_SUCCESS;
+        CommonError = COMMON_ERROR_SUCCESS;
     } while (FALSE);
 
-    return SsDedsError;
+    return CommonError;
 }
 
 std::wstring
@@ -109,7 +94,7 @@ COMMON_ERROR
     _In_ CONST std::wstring & wstrPath
     )
 {
-    COMMON_ERROR SsDedsError = COMMON_ERROR_DEFAULT;
+    COMMON_ERROR CommonError = COMMON_ERROR_DEFAULT;
 
     std::wstring wstrParent = L"";
     int nRet = 0;
@@ -121,7 +106,7 @@ COMMON_ERROR
         wstrParent = GetParent(wstrPath);
         if (!wstrParent.length())
         {
-            SsDedsError = COMMON_ERROR_SUCCESS;
+            CommonError = COMMON_ERROR_SUCCESS;
             break;
         }
 
@@ -155,15 +140,15 @@ COMMON_ERROR
                     COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"SHCreateDirectory (%s) failed. msdn(%d)", wstrParent.c_str(), nRet);
                 }
 
-                SsDedsError = COMMON_ERROR_CREATE_DIRECTORY_FAILED;
+                CommonError = COMMON_ERROR_CREATE_DIRECTORY_FAILED;
                 break;
             }
         }
 
-        SsDedsError = COMMON_ERROR_SUCCESS;
+        CommonError = COMMON_ERROR_SUCCESS;
     } while (FALSE);
 
-    return SsDedsError;
+    return CommonError;
 }
 
 std::wstring CCommonPath::GetPath(
@@ -197,14 +182,76 @@ std::wstring CCommonPath::GetPath(
     return wstrRet;
 }
 
+std::wstring
+    CCommonPath::ToLong(
+    _In_ CONST std::wstring & wstrPath
+    )
+{
+    std::wstring wstrRet = L"";
+
+    WCHAR * pwchPath = NULL;
+    int nLengthCh = 0;
+    int nResult = 0;
+
+
+    do
+    {
+        if (0 == wstrPath.length())
+        {
+            break;
+        }
+
+        nLengthCh = COMMON_MAX_PATH;
+
+        do
+        {
+            if (NULL != pwchPath)
+            {
+                free(pwchPath);
+                pwchPath = NULL;
+            }
+
+            pwchPath = ( WCHAR *)calloc(1, nLengthCh * sizeof(WCHAR));
+            if (NULL == pwchPath)
+            {
+                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"calloc failed. msdn(%d)", GetLastError());
+                wstrRet = wstrPath;
+                break;
+            }
+
+            nResult = GetLongPathName(wstrPath.c_str(), pwchPath, nLengthCh);
+            if (0 == nResult)
+            {
+                // COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"GetLongPathName (%s) failed. msdn(%d)", wstrPath.c_str(), GetLastError());
+                wstrRet = wstrPath;
+                break;
+            }
+
+            if (nResult < nLengthCh)
+            {
+                wstrRet = pwchPath;
+                break;
+            }
+
+            nLengthCh = nResult;
+        } while (TRUE);
+    } while (FALSE);
+
+    if (NULL != pwchPath)
+    {
+        free(pwchPath);
+        pwchPath = NULL;
+    }
+
+    return wstrRet;
+}
+
 CCommonPath::CCommonPath()
 {
-    m_wstrSystemRoot = L"";
     m_wstrTempDir = L"";
 }
 
 CCommonPath::~CCommonPath()
 {
-    m_wstrSystemRoot = L"";
     m_wstrTempDir = L"";
 }

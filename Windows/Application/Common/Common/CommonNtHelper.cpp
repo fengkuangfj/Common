@@ -36,6 +36,13 @@ COMMON_ERROR
                     COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"NtQueryInformationFile", GetLastError());
                 }
 
+                m_Ntdll_dll_NtQueryInformationProcess = (Ntdll_dll_NtQueryInformationProcess_Proc_Type)GetProcAddress(m_hNtdll_dll, "NtQueryInformationProcess");
+                if (NULL == m_Ntdll_dll_NtQueryInformationProcess)
+                {
+                    CommonError = COMMON_ERROR_GET_PROC_ADDRESS_FAILED;
+                    COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"NtQueryInformationProcess", GetLastError());
+                }
+
                 m_Ntdll_dll_RtlGetNtVersionNumbers = (Ntdll_dll_RtlGetNtVersionNumbers_Proc_Type)GetProcAddress(m_hNtdll_dll, "RtlGetNtVersionNumbers");
                 if (NULL == m_Ntdll_dll_RtlGetNtVersionNumbers)
                 {
@@ -132,6 +139,31 @@ NTSTATUS
     }
 }
 
+NTSTATUS
+    CCommonNtHelper::NtQueryInformationProcess(
+    __in HANDLE ProcessHandle,
+    __in PROCESSINFOCLASS ProcessInformationClass,
+    __out PVOID ProcessInformation,
+    __in ULONG ProcessInformationLength,
+    __out_opt PULONG ReturnLength
+    )
+{
+    if (NULL != m_Ntdll_dll_NtQueryInformationProcess)
+    {
+        return m_Ntdll_dll_NtQueryInformationProcess(
+            ProcessHandle,
+            ProcessInformationClass,
+            ProcessInformation,
+            ProcessInformationLength,
+            ReturnLength
+            );
+    }
+    else
+    {
+        return STATUS_UNSUCCESSFUL;
+    }
+}
+
 VOID
     CCommonNtHelper::RtlGetNtVersionNumbers(
     DWORD * dwMajorVersion,
@@ -156,6 +188,7 @@ CCommonNtHelper::CCommonNtHelper()
     m_hNtdll_dll = NULL;
     m_Ntdll_dll_NtQueryObject = NULL;
     m_Ntdll_dll_NtQueryInformationFile = NULL;
+    m_Ntdll_dll_NtQueryInformationProcess = NULL;
     m_Ntdll_dll_RtlGetNtVersionNumbers = NULL;
 }
 
@@ -164,5 +197,6 @@ CCommonNtHelper::~CCommonNtHelper()
     m_hNtdll_dll = NULL;
     m_Ntdll_dll_NtQueryObject = NULL;
     m_Ntdll_dll_NtQueryInformationFile = NULL;
+    m_Ntdll_dll_NtQueryInformationProcess = NULL;
     m_Ntdll_dll_RtlGetNtVersionNumbers = NULL;
 }

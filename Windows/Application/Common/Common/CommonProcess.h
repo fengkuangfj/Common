@@ -12,11 +12,28 @@ class CCommonProcess : public CCommonSingleInstance<CCommonProcess>
     friend class CCommonSingleInstance<CCommonProcess>;
 
 public:
+    COMMON_ERROR
+        Init();
+
+    COMMON_ERROR
+        Unload();
+
     std::wstring
         GetPath();
 
     std::wstring
         GetName();
+
+    std::wstring
+        GetPath(
+        _In_ CONST DWORD & dwPid
+        );
+
+    DWORD
+        GetParentPid( );
+
+    std::wstring
+        GetParentPath( );
 
 private:
     CCommonProcess();

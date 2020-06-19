@@ -31,6 +31,13 @@ COMMON_ERROR
                     break;
                 }
 
+                CommonError = CCommonProcess::GetInstance()->Init();
+                if (COMMON_ERROR_SUCCESS != CommonError)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonProcess::GetInstance()->Init failed. CommonError(%d)", CommonError);
+                    break;
+                }
+
                 CommonError = CCommonService::GetInstance()->Init();
                 if (COMMON_ERROR_SUCCESS != CommonError)
                 {
@@ -133,6 +140,12 @@ COMMON_ERROR CCommonLog::Unload()
                 if (COMMON_ERROR_SUCCESS != CommonError)
                 {
                     COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonService::GetInstance()->Unload failed. CommonError(%d)", CommonError);
+                }
+
+                CommonError = CCommonProcess::GetInstance()->Unload();
+                if (COMMON_ERROR_SUCCESS != CommonError)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonProcess::GetInstance()->Unload failed. CommonError(%d)", CommonError);
                 }
 
                 CommonError = CCommonPath::GetInstance()->Unload();

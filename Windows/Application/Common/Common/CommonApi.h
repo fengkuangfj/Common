@@ -4,6 +4,7 @@
 #include "CommonPublic.h"
 
 #include "CommonAvoidReentry.h"
+#include "CommonDebug.h"
 #include "CommonEnum.h"
 #include "CommonError.h"
 #include "CommonGlobalVariable.h"
