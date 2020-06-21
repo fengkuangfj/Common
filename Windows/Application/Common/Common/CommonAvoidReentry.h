@@ -13,9 +13,6 @@ public:
     BOOL
         IsReentry();
 
-    BOOL
-        IsReentryForPost();
-
     VOID
         Add();
 

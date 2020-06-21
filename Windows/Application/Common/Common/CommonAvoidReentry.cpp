@@ -25,26 +25,6 @@ BOOL
     return bRet;
 }
 
-BOOL
-    CCommonAvoidReentry::IsReentryForPost()
-{
-    BOOL bRet = FALSE;
-
-    DWORD dwCurrentTid = 0;
-
-
-    do
-    {
-        GetLock(dwCurrentTid);
-
-        bRet = (1 < m_AvoidReentryInfos[dwCurrentTid]);
-    } while (FALSE);
-
-    FreeLock(dwCurrentTid);
-
-    return bRet;
-}
-
 VOID
     CCommonAvoidReentry::Add()
 {
