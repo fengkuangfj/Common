@@ -16,6 +16,20 @@ COMMON_ERROR
             CommonWriteLock lock(ms_InitFlagLock);
             if (!GetInitFlag())
             {
+                if (0 == GetWindowsDirectory(wchTempDir, _countof(wchTempDir)))
+                {
+                    m_wstrSystemRoot = L"C:\\Windows";
+                }
+                else
+                {
+                    if (L'\\' == wchTempDir[wcslen(wchTempDir) - 1])
+                    {
+                        wchTempDir[wcslen(wchTempDir) - 1] = L'\0';
+                    }
+
+                    m_wstrSystemRoot = wchTempDir;
+                }
+
                 if (0 == GetTempPath(_countof(wchTempDir), wchTempDir))
                 {
                     m_wstrTempDir = L"C:\\Temp";
@@ -183,6 +197,264 @@ std::wstring CCommonPath::GetPath(
 }
 
 std::wstring
+    CCommonPath::GetPath(
+    _In_ CONST OBJECT_ATTRIBUTES * pObjectAttributes
+    )
+{
+    std::wstring wstrRet = L"";
+
+    WCHAR * pwchPath = NULL;
+    int nPathSizeCh = 0;
+    int nNameSizeCh = 0;
+    WCHAR * pwchName = NULL;
+    std::wstring wstrPathRootDirectory = L"";
+
+
+    do
+    {
+        if (NULL == pObjectAttributes)
+        {
+            break;
+        }
+
+        if (NULL != pObjectAttributes->RootDirectory
+            && INVALID_HANDLE_VALUE != pObjectAttributes->RootDirectory)
+        {
+            wstrPathRootDirectory = GetPath(pObjectAttributes->RootDirectory, FALSE);
+            if (0 == wstrPathRootDirectory.length())
+            {
+                break;
+            }
+
+            nPathSizeCh = (int)wstrPathRootDirectory.length() + 1;
+
+            if (NULL != pObjectAttributes->ObjectName
+                && NULL != pObjectAttributes->ObjectName->Buffer)
+            {
+                nNameSizeCh = pObjectAttributes->ObjectName->Length / sizeof(WCHAR) + 1;
+                nPathSizeCh += (nNameSizeCh - 1);
+            }
+
+            nPathSizeCh++;
+
+            pwchPath = (WCHAR *)calloc(1, nPathSizeCh * sizeof(WCHAR));
+            if (NULL == pwchPath)
+            {
+                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"calloc failed. msdn(%d)", GetLastError());
+                break;
+            }
+
+            memcpy_s(pwchPath, nPathSizeCh * sizeof(WCHAR), wstrPathRootDirectory.c_str(), wstrPathRootDirectory.length() * sizeof(WCHAR));
+
+            if (0 != nNameSizeCh)
+            {
+                pwchName = (WCHAR *)calloc(1, nNameSizeCh * sizeof(WCHAR));
+                if (NULL == pwchName)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"calloc failed. msdn(%d)", GetLastError());
+                    break;
+                }
+
+                memcpy_s(pwchName, nNameSizeCh * sizeof(WCHAR), pObjectAttributes->ObjectName->Buffer, pObjectAttributes->ObjectName->Length);
+
+                if (L'\\' == *(pwchPath + wcslen(pwchPath) - 1))
+                {
+                    if (L'\\' == *pwchName)
+                    {
+                        if (2 <= wcslen(pwchName))
+                        {
+                            wcscat_s(pwchPath, nPathSizeCh, pwchName + 1);
+                        }
+                    }
+                    else
+                    {
+                        wcscat_s(pwchPath, nPathSizeCh, pwchName);
+                    }
+                }
+                else
+                {
+                    if (L'\\' == *pwchName)
+                    {
+                        wcscat_s(pwchPath, nPathSizeCh, pwchName);
+                    }
+                    else
+                    {
+                        wcscat_s(pwchPath, nPathSizeCh, L"\\");
+                        wcscat_s(pwchPath, nPathSizeCh, pwchName);
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (NULL == pObjectAttributes->ObjectName
+                || NULL == pObjectAttributes->ObjectName->Buffer)
+            {
+                break;
+            }
+
+            nPathSizeCh = pObjectAttributes->ObjectName->Length / sizeof(WCHAR) + 1;
+            pwchPath = (WCHAR *)calloc(1, nPathSizeCh * sizeof(WCHAR));
+            if (NULL == pwchPath)
+            {
+                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"calloc failed. msdn(%d)", GetLastError());
+                break;
+            }
+
+            memcpy_s(pwchPath, nPathSizeCh * sizeof(WCHAR), pObjectAttributes->ObjectName->Buffer, pObjectAttributes->ObjectName->Length);
+        }
+
+        {
+            int nLengthTemp = (int)wcslen(pwchPath);
+            if (11 == nLengthTemp)
+            {
+                if (0 == _wcsnicmp(pwchPath, L"\\systemroot", 11))
+                {
+                    memcpy_s(pwchPath, nPathSizeCh * sizeof(WCHAR), m_wstrSystemRoot.c_str(), m_wstrSystemRoot.length() * sizeof(WCHAR));
+                    pwchPath[nLengthTemp - 1] = L'\0';
+                }
+            }
+            else if (12 <= nLengthTemp)
+            {
+                if (0 == _wcsnicmp(pwchPath, L"\\systemroot\\", 12))
+                {
+                    memcpy_s(pwchPath, nPathSizeCh * sizeof(WCHAR), m_wstrSystemRoot.c_str(), m_wstrSystemRoot.length() * sizeof(WCHAR));
+                    memcpy_s(pwchPath + m_wstrSystemRoot.length(), (nPathSizeCh - m_wstrSystemRoot.length()) * sizeof(WCHAR), pwchPath + 11, (nLengthTemp - 11) * sizeof(WCHAR));
+                    pwchPath[nLengthTemp - 1] = L'\0';
+                }
+            }
+        }
+
+        TransitionToLetter(pwchPath, nPathSizeCh);
+
+        if (L'\\' == pwchPath[wcslen(pwchPath) - 1])
+        {
+            pwchPath[wcslen(pwchPath) - 1] = L'\0';
+        }
+
+        if (!wcslen(pwchPath))
+        {
+            break;
+        }
+
+        if (IsPath(pwchPath))
+        {
+            wstrRet = ToLong(pwchPath);
+
+            CCommonStringConvert::GetInstance()->ToLower(wstrRet);
+        }
+        else
+        {
+            wstrRet = pwchPath;
+        }
+    } while (FALSE);
+
+    if (NULL != pwchName)
+    {
+        free(pwchName);
+        pwchName = NULL;
+    }
+
+    if (NULL != pwchPath)
+    {
+        free(pwchPath);
+        pwchPath = NULL;
+    }
+
+    return wstrRet;
+}
+
+std::wstring
+    CCommonPath::GetPath(
+    _In_ CONST HANDLE & hFile,
+    _In_ CONST BOOL & bToLong
+    )
+{
+    std::wstring wstrRet = L"";
+
+    OBJECT_NAME_INFORMATION * pObjectNameInformation = NULL;
+    WCHAR * pwchPath = NULL;
+    ULONG ulSizeB = 0;
+
+
+    do
+    {
+        if (NULL == hFile
+            || INVALID_HANDLE_VALUE == hFile)
+        {
+            break;
+        }
+
+        ulSizeB = sizeof(OBJECT_NAME_INFORMATION) + sizeof(WCHAR) * COMMON_MAX_PATH;
+        pObjectNameInformation = (OBJECT_NAME_INFORMATION *)calloc(1, ulSizeB);
+        if (NULL == pObjectNameInformation)
+        {
+            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"calloc failed. msdn(%d)", GetLastError());
+            break;
+        }
+
+        CCommonNtHelper::GetInstance()->NtQueryObject(hFile, (OBJECT_INFORMATION_CLASS)ObjectNameInformation, pObjectNameInformation, ulSizeB, &ulSizeB);
+        if (0 == pObjectNameInformation->Name.Length)
+        {
+            break;
+        }
+
+        pwchPath = (WCHAR *)calloc(1, pObjectNameInformation->Name.Length + sizeof(WCHAR));
+        if (NULL == pwchPath)
+        {
+            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"calloc failed. msdn(%d)", GetLastError());
+            break;
+        }
+
+        memcpy_s(pwchPath, pObjectNameInformation->Name.Length + sizeof(WCHAR), pObjectNameInformation->Name.Buffer, pObjectNameInformation->Name.Length);
+
+        TransitionToLetter(pwchPath, (pObjectNameInformation->Name.Length + sizeof(WCHAR)) / sizeof(WCHAR));
+
+        if (L'\\' == pwchPath[wcslen(pwchPath) - 1])
+        {
+            pwchPath[wcslen(pwchPath) - 1] = L'\0';
+        }
+
+        if (!wcslen(pwchPath))
+        {
+            break;
+        }
+
+        if (IsPath(pwchPath))
+        {
+            if (bToLong)
+            {
+                wstrRet = ToLong(pwchPath);
+            }
+            else
+            {
+                wstrRet = pwchPath;
+            }
+
+            CCommonStringConvert::GetInstance()->ToLower(wstrRet);
+        }
+        else
+        {
+            wstrRet = pwchPath;
+        }
+    } while (FALSE);
+
+    if (NULL != pwchPath)
+    {
+        free(pwchPath);
+        pwchPath = NULL;
+    }
+
+    if (NULL != pObjectNameInformation)
+    {
+        free(pObjectNameInformation);
+        pObjectNameInformation = NULL;
+    }
+
+    return wstrRet;
+}
+
+std::wstring
     CCommonPath::ToLong(
     _In_ CONST std::wstring & wstrPath
     )
@@ -246,12 +518,308 @@ std::wstring
     return wstrRet;
 }
 
+BOOL
+    CCommonPath::IsPath(
+    _In_ CONST std::wstring & wstrPath
+    )
+{
+    BOOL bRet = FALSE;
+
+
+    do
+    {
+        if (0 == wstrPath.length())
+        {
+            break;
+        }
+
+        if ((2 <= wstrPath.length()
+            && L':' == *(wstrPath.c_str() + 1)
+            && (((L'a' <= *wstrPath.c_str() && L'z' >= *wstrPath.c_str())) || ((L'A' <= *wstrPath.c_str() && L'Z' >= *wstrPath.c_str()))))
+            ||
+            IsNetworkPath(wstrPath))
+        {
+            bRet = TRUE;
+        }
+    } while (FALSE);
+
+    return bRet;
+}
+
+BOOL
+    CCommonPath::IsNetworkPath(
+    _In_ CONST std::wstring & wstrPath
+    )
+{
+    BOOL bRet = FALSE;
+
+    WCHAR wchVolume[4] = { 0 };
+    UINT unDriveType = 0;
+    WCHAR * pwchEnd = NULL;
+    WCHAR wchIp[COMMON_IP_MAX_LENGTH + 1] = { 0 };
+    WCHAR * pwchBegin = NULL;
+    int nCount = 0;
+    int nSubIp = 0;
+    int nIp = 0;
+
+
+    do
+    {
+        wchVolume[0] = *wstrPath.c_str();
+        wchVolume[1] = L':';
+        wchVolume[2] = L'\\';
+        unDriveType = GetDriveType(wchVolume);
+        if (DRIVE_REMOTE == unDriveType)
+        {
+            bRet = TRUE;
+            break;
+        }
+
+        if (10 >= wstrPath.length())
+        {
+            break;
+        }
+
+        if (0 != _wcsnicmp(wstrPath.c_str(), L"\\\\", 2))
+        {
+            break;
+        }
+
+        pwchEnd = StrChr(wstrPath.c_str() + 2, L'\\');
+        if (NULL == pwchEnd)
+        {
+            break;
+        }
+
+        memcpy_s(wchIp, sizeof(wchIp), wstrPath.c_str() + 2, (pwchEnd - wstrPath.c_str() - 2) * sizeof(WCHAR));
+
+        pwchBegin = wchIp;
+
+        do
+        {
+            WCHAR wchTemp[4] = { 0 };
+
+            nCount++;
+
+            pwchEnd = StrChr(pwchBegin, L'.');
+            if (NULL != pwchEnd)
+            {
+                if (3 < nCount)
+                {
+                    break;
+                }
+
+                memcpy_s(wchTemp, sizeof(wchTemp), pwchBegin, (pwchEnd - pwchBegin) * sizeof(WCHAR));
+
+                nSubIp = _wtoi(wchTemp);
+                if (0 > nSubIp || 255 < nSubIp)
+                {
+                    break;
+                }
+
+                if (wchIp + wcslen(wchIp) - 1 <= pwchEnd)
+                {
+                    break;
+                }
+
+                pwchBegin = pwchEnd + 1;
+                pwchEnd = NULL;
+            }
+            else
+            {
+                if (4 == nCount)
+                {
+                    wcscpy_s(wchTemp, _countof(wchTemp), pwchBegin);
+
+                    nIp = _wtoi(wchTemp);
+                    if (0 > nIp || 255 < nIp)
+                    {
+                        break;
+                    }
+
+                    bRet = TRUE;
+                }
+
+                break;
+            }
+        } while (TRUE);
+    } while (FALSE);
+
+    return bRet;
+}
+
+VOID
+    CCommonPath::TransitionToLetter(
+    _Inout_ WCHAR * pwchPath,
+    _In_ CONST int & nSizeCh
+    )
+{
+    WCHAR * pwchLetter = NULL;
+
+
+    do
+    {
+        if (NULL == pwchPath
+            || 0 == nSizeCh)
+        {
+            break;
+        }
+
+        if (2 <= wcslen(pwchPath)
+            && L':' == *(pwchPath + 1)
+            && ((L'a' <= *pwchPath && L'z' >= *pwchPath) || (L'A' <= *pwchPath && L'Z' >= *pwchPath)))
+        {
+            ;
+        }
+        else if (6 <= wcslen(pwchPath)
+            && L':' == *(pwchPath + 5)
+            && ((L'a' <= *(pwchPath + 4) && L'z' >= *(pwchPath + 4)) || (L'A' <= *(pwchPath + 4) && L'Z' >= *(pwchPath + 4)))
+            && 0 == _wcsnicmp(pwchPath, L"\\??\\", 4))
+        {
+            MoveMemory(pwchPath, pwchPath + 4, (wcslen(pwchPath) - 3) * sizeof(TCHAR));
+        }
+        else if (9 <= wcslen(pwchPath)
+            && 0 == _wcsnicmp(pwchPath, L"\\device\\", 8))
+        {
+            pwchLetter = (LPTSTR)calloc(1, 3 * sizeof(TCHAR));
+            if (NULL == pwchLetter)
+            {
+                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"calloc (%s) failed. msdn(%d)", pwchPath, GetLastError());
+                break;
+            }
+
+            pwchLetter[0] = L'c';
+            pwchLetter[1] = L':';
+
+            BOOL bFind = FALSE;
+
+            do
+            {
+                WCHAR wchDevice[COMMON_MAX_PATH] = { 0 };
+                if (0 != QueryDosDevice(pwchLetter, wchDevice, _countof(wchDevice)))
+                {
+                    if (39 <= wcslen(wchDevice)
+                        && 0 == _wcsnicmp(wchDevice, L"\\device\\lanmanredirector\\;", 26))
+                    {
+                        TransitionToMup(wchDevice, _countof(wchDevice));
+                    }
+
+                    if (0 == _wcsnicmp(pwchPath, wchDevice, wcslen(wchDevice)))
+                    {
+                        MoveMemory(pwchPath, pwchLetter, 4);
+                        MoveMemory(pwchPath + 2, pwchPath + wcslen(wchDevice), (wcslen(pwchPath) + 1 - wcslen(wchDevice)) * sizeof(WCHAR));
+                        bFind = TRUE;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (ERROR_ACCESS_DENIED != GetLastError()
+                        && ERROR_FILE_NOT_FOUND != GetLastError())
+                    {
+                        COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"QueryDosDevice (%s) failed. msdn(%d)", pwchLetter, GetLastError());
+                    }
+                }
+
+                pwchLetter[0] += (L'b' - L'a');
+            } while (L'a' <= pwchLetter[0] && L'z' >= pwchLetter[0]);
+
+            if (!bFind)
+            {
+                if (12 <= wcslen(pwchPath)
+                    && 0 == _wcsnicmp(pwchPath, L"\\Device\\Mup", 11))
+                {
+                    MoveMemory(pwchPath + 1, pwchPath + 11, (wcslen(pwchPath + 11) + 1) * sizeof(WCHAR));
+                }
+            }
+        }
+        else
+        {
+            if (8 <= wcslen(pwchPath)
+                && 0 == _wcsnicmp(pwchPath, L"\\??\\unc", 7))
+            {
+                MoveMemory(pwchPath + 1, pwchPath + 7, (wcslen(pwchPath + 7) + 1) * sizeof(WCHAR));
+            }
+        }
+    } while (FALSE);
+
+    if (NULL != pwchLetter)
+    {
+        free(pwchLetter);
+        pwchLetter = NULL;
+    }
+
+    return ;
+}
+
+VOID
+    CCommonPath::TransitionToMup(
+    _Inout_ WCHAR * pwchPath,
+    _In_ CONST int & nSizeCh
+    )
+{
+    WCHAR * pwchBegin = NULL;
+    WCHAR * pwchEnd = NULL;
+    int nCount = 0;
+
+
+    do
+    {
+        if (NULL == pwchPath
+            || 0 == nSizeCh)
+        {
+            break;
+        }
+        for (WCHAR * pwchPosition = pwchPath; pwchPosition < pwchPath + wcslen(pwchPath); pwchPosition++)
+        {
+            if (L'\\' == *pwchPosition)
+            {
+                nCount++;
+
+                if (2 == nCount)
+                {
+                    pwchBegin = pwchPosition;
+                }
+
+                else if (4 == nCount)
+                {
+                    pwchEnd = pwchPosition;
+                    break;
+                }
+            }
+        }
+
+        if (NULL == pwchBegin
+            || NULL == pwchEnd)
+        {
+            break;
+        }
+
+        if (CCommonOperationSystem::GetInstance()->IsWindows7OrGreater())
+        {
+            MoveMemory(pwchPath + 8, L"mup", 6);
+            *(pwchPath + 11) = L'\0';
+            wcscat_s(pwchPath, nSizeCh, pwchEnd);
+        }
+        else
+        {
+            MoveMemory(pwchPath + 8, L"lanmanredirector", 32);
+            *(pwchPath + 24) = L'\0';
+            wcscat_s(pwchPath, nSizeCh, pwchEnd);
+        }
+    } while (FALSE);
+
+    return ;
+}
+
 CCommonPath::CCommonPath()
 {
+    m_wstrSystemRoot = L"";
     m_wstrTempDir = L"";
 }
 
 CCommonPath::~CCommonPath()
 {
+    m_wstrSystemRoot = L"";
     m_wstrTempDir = L"";
 }

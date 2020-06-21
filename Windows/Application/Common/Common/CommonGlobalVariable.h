@@ -9,6 +9,8 @@
 #define COMMON_MAX_PATH (MAX_PATH * 3 / 2)
 #endif
 
+#define COMMON_IP_MAX_LENGTH (15)
+
 #ifndef EPSILON
 #define EPSILON (1e-6)
 #endif
