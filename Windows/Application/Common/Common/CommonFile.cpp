@@ -435,7 +435,8 @@ LONGLONG
         }
 
         llRet = SetFilePointer(hFile, 0 , NULL , FILE_CURRENT);
-        if (INVALID_SET_FILE_POINTER == llRet)
+        if (INVALID_SET_FILE_POINTER == llRet
+            && NO_ERROR != GetLastError())
         {
             COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"SetFilePointer failed. msdn(%d)", GetLastError());
             break;
@@ -468,7 +469,8 @@ COMMON_ERROR
 
         liPos.QuadPart = llPosition;
 
-        if (INVALID_SET_FILE_POINTER == SetFilePointer(hFile, liPos.LowPart, &liPos.HighPart , FILE_BEGIN))
+        if (INVALID_SET_FILE_POINTER == SetFilePointer(hFile, liPos.LowPart, &liPos.HighPart , FILE_BEGIN)
+            && NO_ERROR != GetLastError())
         {
             CommonError = COMMON_ERROR_SET_FILE_POINTER_FAILED;
             COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"SetFilePointer failed. msdn(%d)", GetLastError());
