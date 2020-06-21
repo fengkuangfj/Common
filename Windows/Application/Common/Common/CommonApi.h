@@ -30,15 +30,15 @@
 #ifndef Common_lib
 #ifdef _DEBUG
 #ifdef _WIN64
-#pragma comment(lib, "../../../../../Custom/Windows/Application/TransparentEncryptionDecryption/x64/Debug/Common.lib")
+#pragma comment(lib, "../../../../../Custom/Windows/Application/TransparentEncryptDecrypt/x64/Debug/Common.lib")
 #else
-#pragma comment(lib, "../../../../../Custom/Windows/Application/TransparentEncryptionDecryption/Debug/Common.lib")
+#pragma comment(lib, "../../../../../Custom/Windows/Application/TransparentEncryptDecrypt/Debug/Common.lib")
 #endif
 #else
 #ifdef _WIN64
-#pragma comment(lib, "../../../../../Custom/Windows/Application/TransparentEncryptionDecryption/x64/Release/Common.lib")
+#pragma comment(lib, "../../../../../Custom/Windows/Application/TransparentEncryptDecrypt/x64/Release/Common.lib")
 #else
-#pragma comment(lib, "../../../../../Custom/Windows/Application/TransparentEncryptionDecryption/Release/Common.lib")
+#pragma comment(lib, "../../../../../Custom/Windows/Application/TransparentEncryptDecrypt/Release/Common.lib")
 #endif
 #endif
 #endif
