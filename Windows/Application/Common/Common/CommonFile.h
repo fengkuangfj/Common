@@ -8,9 +8,9 @@
 #include "CommonNtHelper.h"
 #include "CommonSingleInstance.h"
 
-class CSsDedsFile : public CCommonSingleInstance<CSsDedsFile>
+class CCommonFile : public CCommonSingleInstance<CCommonFile>
 {
-    friend class CCommonSingleInstance<CSsDedsFile>;
+    friend class CCommonSingleInstance<CCommonFile>;
 
 public:
     COMMON_ERROR
@@ -79,7 +79,7 @@ public:
         );
 
 private:
-    CSsDedsFile();
+    CCommonFile();
 
-    ~CSsDedsFile();
+    ~CCommonFile();
 };

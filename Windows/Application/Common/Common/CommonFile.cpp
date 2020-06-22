@@ -2,7 +2,7 @@
 #include "CommonFile.h"
 
 COMMON_ERROR
-    CSsDedsFile::Init()
+    CCommonFile::Init()
 {
     COMMON_ERROR CommonError = COMMON_ERROR_DEFAULT;
 
@@ -32,7 +32,7 @@ COMMON_ERROR
 }
 
 COMMON_ERROR
-    CSsDedsFile::Unload()
+    CCommonFile::Unload()
 {
     COMMON_ERROR CommonError = COMMON_ERROR_DEFAULT;
 
@@ -61,7 +61,7 @@ COMMON_ERROR
 }
 
 COMMON_ERROR
-    CSsDedsFile::GetTime(
+    CCommonFile::GetTime(
     _In_ CONST std::wstring & wstrPath,
     _Inout_opt_ FILETIME * pftCreationTime,
     _Inout_opt_ FILETIME * pftLastAccessTime,
@@ -120,7 +120,7 @@ COMMON_ERROR
 }
 
 BOOL
-    CSsDedsFile::IsExist(
+    CCommonFile::IsExist(
     _In_ CONST std::wstring & wstrPath
     )
 {
@@ -157,7 +157,7 @@ BOOL
 }
 
 BOOL
-    CSsDedsFile::IsFile(
+    CCommonFile::IsFile(
     _In_ CONST std::wstring & wstrPath
     )
 {
@@ -231,7 +231,7 @@ BOOL
 }
 
 BOOL
-    CSsDedsFile::IsFile(
+    CCommonFile::IsFile(
     _In_ CONST HANDLE & hFile
     )
 {
@@ -270,7 +270,7 @@ BOOL
 }
 
 BOOL
-    CSsDedsFile::IsFileOrSectionObjectType(
+    CCommonFile::IsFileOrSectionObjectType(
     _In_ CONST HANDLE & hFile
     )
 {
@@ -327,7 +327,7 @@ BOOL
 }
 
 BOOL
-    CSsDedsFile::IsFileOption(
+    CCommonFile::IsFileOption(
     IN ULONG & Options
     )
 {
@@ -348,7 +348,7 @@ BOOL
 }
 
 LONGLONG
-    CSsDedsFile::GetEndOfFile(
+    CCommonFile::GetEndOfFile(
     _In_ CONST HANDLE & hFile
     )
 {
@@ -379,7 +379,7 @@ LONGLONG
 }
 
 LONGLONG
-    CSsDedsFile::GetEndOfFile(
+    CCommonFile::GetEndOfFile(
     _In_ CONST std::wstring & wstrPath
     )
 {
@@ -420,7 +420,7 @@ LONGLONG
 }
 
 LONGLONG
-    CSsDedsFile::GetPositon(
+    CCommonFile::GetPositon(
     _In_ CONST HANDLE & hFile
     )
 {
@@ -449,7 +449,7 @@ LONGLONG
 }
 
 COMMON_ERROR
-    CSsDedsFile::SetPosition(
+    CCommonFile::SetPosition(
     _In_ CONST HANDLE & hFile,
     _In_ CONST LONGLONG & llPosition
     )
@@ -486,7 +486,7 @@ COMMON_ERROR
 }
 
 BOOL
-    CSsDedsFile::CanWrite(
+    CCommonFile::CanWrite(
     _In_ CONST ULONG & Win32Protect
     )
 {
@@ -515,12 +515,12 @@ BOOL
     return bRet;
 }
 
-CSsDedsFile::CSsDedsFile()
+CCommonFile::CCommonFile()
 {
     ;
 }
 
-CSsDedsFile::~CSsDedsFile()
+CCommonFile::~CCommonFile()
 {
     ;
 }

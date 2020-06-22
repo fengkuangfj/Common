@@ -72,7 +72,7 @@
 #define FILE_RENAME_IGNORE_READONLY_ATTRIBUTE 0x00000040
 #endif
 
-typedef enum _SS_DEDS_FILE_INFORMATION_CLASS
+typedef enum _COMMON_FILE_INFORMATION_CLASS
 {
     SsDedsFileDirectoryInformation = FileDirectoryInformation,
     FileFullDirectoryInformation, // 2
@@ -164,7 +164,7 @@ typedef enum _SS_DEDS_FILE_INFORMATION_CLASS
     FileStorageReserveIdInformation, // 74
     FileCaseSensitiveInformationForceAccessCheck, // 75
     FileMaximumInformation
-} SS_DEDS_FILE_INFORMATION_CLASS, *PSS_DEDS_FILE_INFORMATION_CLASS;
+} COMMON_FILE_INFORMATION_CLASS, *PCOMMON_FILE_INFORMATION_CLASS;
 
 typedef enum _SECTION_INHERIT
 {
