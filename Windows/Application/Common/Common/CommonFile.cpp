@@ -87,6 +87,8 @@ COMMON_ERROR
         hFind = FindFirstFile(wstrPath.c_str(), &Win32FindData);
         if (INVALID_HANDLE_VALUE == hFind)
         {
+            CommonError = COMMON_ERROR_NOT_FOUND;
+            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"FindFirstFile (%s) failed. msdn(%d)", wstrPath.c_str(), GetLastError());
             break;
         }
 

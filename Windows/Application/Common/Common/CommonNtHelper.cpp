@@ -75,6 +75,7 @@ COMMON_ERROR
             {
                 m_Ntdll_dll_NtQueryObject = NULL;
                 m_Ntdll_dll_NtQueryInformationFile = NULL;
+                m_Ntdll_dll_NtQueryInformationProcess = NULL;
                 m_Ntdll_dll_RtlGetNtVersionNumbers = NULL;
 
                 m_hNtdll_dll = NULL;

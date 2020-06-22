@@ -144,11 +144,10 @@ BOOL
 
     LONG lResult = 0;
 
+    dwCurrentTid = GetCurrentThreadId();
 
     do
     {
-        dwCurrentTid = GetCurrentThreadId();
-
         lResult = InterlockedCompareExchange(&m_lTidGetedLock, (LONG)dwCurrentTid, 0);
         if (0 == lResult)
         {

@@ -32,7 +32,14 @@ COMMON_ERROR
 
                 if (0 == GetTempPath(_countof(wchTempDir), wchTempDir))
                 {
-                    m_wstrTempDir = L"C:\\Temp";
+                    if (CCommonOperationSystem::GetInstance()->IsWindowsVistaOrGreater())
+                    {
+                        m_wstrTempDir = L"C:\\Users\\Public\\Temp";
+                    }
+                    else
+                    {
+                        m_wstrTempDir = L"C:\\Documents and Settings\\All Users\\Temp";
+                    }
                 }
                 else
                 {

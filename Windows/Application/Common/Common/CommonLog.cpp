@@ -606,11 +606,6 @@ std::wstring
     do
     {
         wstrRet = CCommonPath::GetInstance()->GetPath(COMMON_PATH_TYPE_LOG_DIR);
-        if (!wstrRet.length())
-        {
-            break;
-        }
-
         wstrRet += L"\\";
         wstrRet += m_wstrProcessName;
 
