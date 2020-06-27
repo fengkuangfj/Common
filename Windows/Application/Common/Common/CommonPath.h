@@ -34,13 +34,25 @@ public:
 
     std::wstring
         GetPath(
+        _In_ CONST OBJECT_ATTRIBUTES * pObjectAttributes
+        );
+
+    std::wstring
+        GetPath(
         _In_ CONST HANDLE & hFile,
         _In_ CONST BOOL & bToLong
         );
 
     std::wstring
         GetPath(
-        _In_ CONST OBJECT_ATTRIBUTES * pObjectAttributes
+        _In_ CONST std::wstring & wstrSrcPath,
+        _In_ CONST FILE_RENAME_INFORMATION * pFileRenameInformation
+        );
+
+    std::wstring
+        GetPath(
+        _In_ CONST WCHAR * pwchBuffer,
+        _In_ CONST ULONG ulLengthCh
         );
 
     std::wstring

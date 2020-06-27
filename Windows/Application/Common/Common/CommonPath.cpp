@@ -461,6 +461,114 @@ std::wstring
     return wstrRet;
 }
 
+
+std::wstring
+    CCommonPath::GetPath(
+    _In_ CONST std::wstring & wstrSrcPath,
+    _In_ CONST FILE_RENAME_INFORMATION * pFileRenameInformation
+    )
+{
+    std::wstring wstrRet = L"";
+
+    int nNameSizeCh = 0;
+    WCHAR * pwchName = NULL;
+    std::wstring wstrPathRootDirectory = L"";
+
+
+    do
+    {
+        if (NULL == pFileRenameInformation
+            || NULL == pFileRenameInformation->FileName
+            || 0 >= pFileRenameInformation->FileNameLength)
+        {
+            break;
+        }
+
+        nNameSizeCh = pFileRenameInformation->FileNameLength / sizeof(WCHAR) + 1;
+
+        pwchName = (WCHAR *)calloc(1, nNameSizeCh * sizeof(WCHAR));
+        if (NULL == pwchName)
+        {
+            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"calloc failed. msdn(%d)", GetLastError());
+            break;
+        }
+
+        memcpy_s(pwchName, nNameSizeCh * sizeof(WCHAR), pFileRenameInformation->FileName, pFileRenameInformation->FileNameLength);
+
+        TransitionToLetter(pwchName, nNameSizeCh);
+
+        wstrPathRootDirectory = GetParent(pwchName);
+        if (wstrPathRootDirectory.length())
+        {
+            wstrRet = pwchName;
+        }
+        else
+        {
+            if (NULL != pFileRenameInformation->RootDirectory
+                && INVALID_HANDLE_VALUE != pFileRenameInformation->RootDirectory)
+            {
+                wstrPathRootDirectory = GetPath(pFileRenameInformation->RootDirectory, FALSE);
+            }
+            else
+            {
+                wstrPathRootDirectory = GetParent(wstrSrcPath);
+            }
+
+            wstrRet = wstrPathRootDirectory;
+            wstrRet += L"\\";
+            wstrRet += pwchName;
+        }
+
+        wstrRet = ToLong(wstrRet);
+
+        CCommonStringConvert::GetInstance()->ToLower(wstrRet);
+    } while (FALSE);
+
+    if (NULL != pwchName)
+    {
+        free(pwchName);
+        pwchName = NULL;
+    }
+
+    return wstrRet;
+}
+
+std::wstring
+    CCommonPath::GetPath(
+    _In_ CONST WCHAR * pwchBuffer,
+    _In_ CONST ULONG ulLengthCh
+    )
+{
+    std::wstring wstrRet = L"";
+
+    WCHAR * pwchTemp = NULL;
+
+
+    do
+    {
+        pwchTemp = (WCHAR * )calloc(1, (ulLengthCh + 1) * sizeof(WCHAR));
+        if (NULL == pwchTemp)
+        {
+            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"calloc failed. msdn(%d)", GetLastError());
+            break;
+        }
+
+        memcpy_s(pwchTemp, (ulLengthCh + 1) * sizeof(WCHAR), pwchBuffer, ulLengthCh * sizeof(WCHAR));
+
+        wstrRet = pwchTemp;
+
+        CCommonStringConvert::GetInstance()->ToLower(wstrRet);
+    } while (FALSE);
+
+    if (NULL != pwchTemp)
+    {
+        free(pwchTemp);
+        pwchTemp = NULL;
+    }
+
+    return wstrRet;
+}
+
 std::wstring
     CCommonPath::ToLong(
     _In_ CONST std::wstring & wstrPath
