@@ -286,7 +286,6 @@ BOOL
         if (NULL == hFile
             || INVALID_HANDLE_VALUE == hFile)
         {
-            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"invalid parameter");
             break;
         }
 
