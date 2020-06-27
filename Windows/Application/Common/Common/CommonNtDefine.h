@@ -3,6 +3,7 @@
 
 #include "CommonPublic.h"
 
+#include <winioctl.h>
 #include <winternl.h>
 
 #ifndef _Out_writes_bytes_

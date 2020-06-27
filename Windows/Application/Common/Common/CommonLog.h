@@ -14,7 +14,10 @@
 #include "CommonStringConvert.h"
 #include "CommonTool.h"
 
+#pragma warning(push)
+#pragma warning(disable : 6387)
 #include <Shlobj.h>
+#pragma warning(pop)
 #include <shlwapi.h>
 #include <strsafe.h>
 
