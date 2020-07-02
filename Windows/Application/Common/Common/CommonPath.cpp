@@ -770,6 +770,7 @@ VOID
     )
 {
     WCHAR * pwchLetter = NULL;
+    BOOL bDevice = FALSE;
 
 
     do
@@ -784,18 +785,48 @@ VOID
             && L':' == *(pwchPath + 1)
             && ((L'a' <= *pwchPath && L'z' >= *pwchPath) || (L'A' <= *pwchPath && L'Z' >= *pwchPath)))
         {
-            ;
+            break;
         }
         else if (6 <= wcslen(pwchPath)
             && L':' == *(pwchPath + 5)
             && ((L'a' <= *(pwchPath + 4) && L'z' >= *(pwchPath + 4)) || (L'A' <= *(pwchPath + 4) && L'Z' >= *(pwchPath + 4)))
-            && 0 == _wcsnicmp(pwchPath, L"\\??\\", 4))
+            && (0 == _wcsnicmp(pwchPath, L"\\??\\", 4) || 0 == _wcsnicmp(pwchPath, L"\\\\.\\", 4)))
         {
             MoveMemory(pwchPath, pwchPath + 4, (wcslen(pwchPath) - 3) * sizeof(TCHAR));
+            break;
+        }
+        else if (8 <= wcslen(pwchPath)
+            && 0 == _wcsnicmp(pwchPath, L"\\??\\unc", 7))
+        {
+            MoveMemory(pwchPath + 1, pwchPath + 7, (wcslen(pwchPath) - 6) * sizeof(WCHAR));
+            break;
         }
         else if (9 <= wcslen(pwchPath)
             && 0 == _wcsnicmp(pwchPath, L"\\device\\", 8))
         {
+            bDevice = TRUE;
+        }
+        else if (23 <= wcslen(pwchPath)
+            && (0 == _wcsnicmp(pwchPath, L"\\??\\GlobalRoot\\device\\", 22) || 0 == _wcsnicmp(pwchPath, L"\\\\.\\GlobalRoot\\device\\", 22)))
+        {
+            MoveMemory(pwchPath, pwchPath + 15, (wcslen(pwchPath) - 14) * sizeof(TCHAR));
+
+            bDevice = TRUE;
+        }
+        else
+        {
+            break;
+        }
+
+        if (bDevice)
+        {
+            if (12 <= wcslen(pwchPath)
+                && 0 == _wcsnicmp(pwchPath, L"\\Device\\Mup", 11))
+            {
+                MoveMemory(pwchPath + 1, pwchPath + 11, (wcslen(pwchPath) - 10) * sizeof(WCHAR));
+                break;
+            }
+
             pwchLetter = (LPTSTR)calloc(1, 3 * sizeof(TCHAR));
             if (NULL == pwchLetter)
             {
@@ -805,8 +836,6 @@ VOID
 
             pwchLetter[0] = L'c';
             pwchLetter[1] = L':';
-
-            BOOL bFind = FALSE;
 
             do
             {
@@ -823,7 +852,6 @@ VOID
                     {
                         MoveMemory(pwchPath, pwchLetter, 4);
                         MoveMemory(pwchPath + 2, pwchPath + wcslen(wchDevice), (wcslen(pwchPath) + 1 - wcslen(wchDevice)) * sizeof(WCHAR));
-                        bFind = TRUE;
                         break;
                     }
                 }
@@ -838,23 +866,6 @@ VOID
 
                 pwchLetter[0] += (L'b' - L'a');
             } while (L'a' <= pwchLetter[0] && L'z' >= pwchLetter[0]);
-
-            if (!bFind)
-            {
-                if (12 <= wcslen(pwchPath)
-                    && 0 == _wcsnicmp(pwchPath, L"\\Device\\Mup", 11))
-                {
-                    MoveMemory(pwchPath + 1, pwchPath + 11, (wcslen(pwchPath + 11) + 1) * sizeof(WCHAR));
-                }
-            }
-        }
-        else
-        {
-            if (8 <= wcslen(pwchPath)
-                && 0 == _wcsnicmp(pwchPath, L"\\??\\unc", 7))
-            {
-                MoveMemory(pwchPath + 1, pwchPath + 7, (wcslen(pwchPath + 7) + 1) * sizeof(WCHAR));
-            }
         }
     } while (FALSE);
 
