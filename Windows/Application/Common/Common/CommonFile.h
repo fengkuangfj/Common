@@ -78,6 +78,11 @@ public:
         _In_ CONST ULONG & Win32Protect
         );
 
+    HANDLE
+        OpenForRead(
+        _In_ CONST std::wstring & wstrPath
+        );
+
 private:
     CCommonFile();
 

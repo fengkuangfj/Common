@@ -514,6 +514,62 @@ BOOL
     return bRet;
 }
 
+HANDLE
+    CCommonFile::OpenForRead(
+    _In_ CONST std::wstring & wstrPath
+    )
+{
+    HANDLE hRet = INVALID_HANDLE_VALUE;
+
+
+    do
+    {
+        hRet = CreateFile(
+            wstrPath.c_str(),
+            GENERIC_READ,
+            FILE_SHARE_READ | FILE_SHARE_WRITE,
+            NULL,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL
+            );
+        if (INVALID_HANDLE_VALUE != hRet)
+        {
+            break;
+        }
+
+        hRet = CreateFile(
+            wstrPath.c_str(),
+            GENERIC_READ,
+            FILE_SHARE_READ ,
+            NULL,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL
+            );
+        if (INVALID_HANDLE_VALUE != hRet)
+        {
+            break;
+        }
+
+        hRet = CreateFile(
+            wstrPath.c_str(),
+            GENERIC_READ,
+            FILE_SHARE_WRITE,
+            NULL,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL
+            );
+        if (INVALID_HANDLE_VALUE != hRet)
+        {
+            break;
+        }
+    } while (FALSE);
+
+    return hRet;
+}
+
 CCommonFile::CCommonFile()
 {
     ;
