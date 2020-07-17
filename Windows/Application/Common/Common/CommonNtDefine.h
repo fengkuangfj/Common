@@ -1002,3 +1002,15 @@ typedef
     _Out_writes_bytes_opt_(OutputBufferLength) PVOID OutputBuffer,
     _In_ ULONG OutputBufferLength
     );
+
+typedef
+    NTSTATUS
+    ( NTAPI * Ntdll_dll_NtDuplicateObject_Proc_Type)(
+    _In_ HANDLE SourceProcessHandle,
+    _In_ HANDLE SourceHandle,
+    _In_opt_ HANDLE TargetProcessHandle,
+    _Out_opt_ PHANDLE TargetHandle,
+    _In_ ACCESS_MASK DesiredAccess,
+    _In_ ULONG HandleAttributes,
+    _In_ ULONG Options
+    );
