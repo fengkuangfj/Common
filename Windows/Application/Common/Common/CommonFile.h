@@ -42,6 +42,11 @@ public:
         _In_ CONST HANDLE & hFile
         );
 
+    ACCESS_MASK
+        GetDesiredAccess(
+        _In_ CONST HANDLE & hFile
+        );
+
     BOOL
         IsFileOrSectionObjectType(
         _In_ CONST HANDLE & hFile

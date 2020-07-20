@@ -269,6 +269,45 @@ BOOL
     return bRet;
 }
 
+ACCESS_MASK
+    CCommonFile::GetDesiredAccess(
+    _In_ CONST HANDLE & hFile
+    )
+{
+    ACCESS_MASK ret = 0;
+
+    IO_STATUS_BLOCK IoStatusBlock = { 0 };
+    FILE_ACCESS_INFORMATION FileAccessInfo = { 0 };
+    NTSTATUS ntStatus = STATUS_UNSUCCESSFUL;
+
+
+    do
+    {
+        if (NULL == hFile
+            || INVALID_HANDLE_VALUE == hFile)
+        {
+            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"invalid parameter");
+            break;
+        }
+
+        ntStatus = CCommonNtHelper::GetInstance()->NtQueryInformationFile(
+            hFile,
+            &IoStatusBlock,
+            &FileAccessInfo,
+            sizeof(FileAccessInfo),
+            (FILE_INFORMATION_CLASS)FileAccessInformation
+            );
+        if (!NT_SUCCESS(ntStatus))
+        {
+            break;
+        }
+
+        ret = FileAccessInfo.AccessFlags;
+    } while (FALSE);
+
+    return ret;
+}
+
 BOOL
     CCommonFile::IsFileOrSectionObjectType(
     _In_ CONST HANDLE & hFile
