@@ -557,6 +557,8 @@ std::wstring
 
         wstrRet = pwchTemp;
 
+        wstrRet = ToLong(wstrRet);
+
         CCommonStringConvert::GetInstance()->ToLower(wstrRet);
     } while (FALSE);
 
@@ -579,6 +581,7 @@ std::wstring
     WCHAR * pwchPath = NULL;
     int nLengthCh = 0;
     int nResult = 0;
+    HANDLE hFile = INVALID_HANDLE_VALUE;
 
 
     do
@@ -589,6 +592,19 @@ std::wstring
         }
 
         nLengthCh = COMMON_MAX_PATH;
+
+        if (!PathFileExists(wstrPath.c_str()))
+        {
+            hFile = CreateFile(
+                wstrPath.c_str(),
+                GENERIC_READ,
+                NULL,
+                NULL,
+                CREATE_NEW,
+                FILE_FLAG_DELETE_ON_CLOSE ,
+                NULL
+                );
+        }
 
         do
         {
@@ -628,6 +644,12 @@ std::wstring
     {
         free(pwchPath);
         pwchPath = NULL;
+    }
+
+    if (INVALID_HANDLE_VALUE != hFile)
+    {
+        CloseHandle(hFile);
+        hFile = INVALID_HANDLE_VALUE;
     }
 
     return wstrRet;

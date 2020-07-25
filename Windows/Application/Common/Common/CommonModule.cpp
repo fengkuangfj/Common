@@ -19,9 +19,7 @@ std::wstring
             break;
         }
 
-        GetLongPathName(wchPath, wchPath, _countof(wchPath));
-
-        wstrRet = wchPath;
+        wstrRet = CCommonPath::GetInstance()->ToLong(wchPath);
 
         CCommonStringConvert::GetInstance()->ToLower(wstrRet);
     } while (FALSE);
