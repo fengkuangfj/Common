@@ -555,9 +555,7 @@ std::wstring
 
         memcpy_s(pwchTemp, (ulLengthCh + 1) * sizeof(WCHAR), pwchBuffer, ulLengthCh * sizeof(WCHAR));
 
-        wstrRet = pwchTemp;
-
-        wstrRet = ToLong(wstrRet);
+        wstrRet = ToLong(pwchTemp);
 
         CCommonStringConvert::GetInstance()->ToLower(wstrRet);
     } while (FALSE);
