@@ -318,7 +318,6 @@ BOOL
     CHAR chData[COMMON_MAX_PATH] = {0};
     PUBLIC_OBJECT_TYPE_INFORMATION * pPublicObjectTypeInformation = NULL;
     ULONG ulSizeB = 0;
-    LONGLONG llRet = 0;
 
 
     do
@@ -350,13 +349,6 @@ BOOL
         {
             if (0 == _wcsnicmp(L"File", pPublicObjectTypeInformation->TypeName.Buffer, 4))
             {
-                llRet = SetFilePointer(hFile, 0 , NULL , FILE_CURRENT);
-                if (INVALID_SET_FILE_POINTER == llRet
-                    && ERROR_INVALID_PARAMETER == GetLastError())
-                {
-                    break;
-                }
-
                 bRet = TRUE;
             }
         }
