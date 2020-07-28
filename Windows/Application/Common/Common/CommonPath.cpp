@@ -100,7 +100,7 @@ std::wstring
 
         if (!PathRemoveFileSpec(wchPath))
         {
-            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"PathRemoveFileSpec (%s) failed. msdn(%d)", wchPath, GetLastError());
+            // COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"PathRemoveFileSpec (%s) failed. msdn(%d)", wchPath, GetLastError());
             break;
         }
 
