@@ -579,6 +579,8 @@ std::wstring
     WCHAR * pwchPath = NULL;
     int nLengthCh = 0;
     int nResult = 0;
+    std::wstring wstrParent = L"";
+    WCHAR * pwchFileName = NULL;
 
 
     do
@@ -606,12 +608,32 @@ std::wstring
                 break;
             }
 
-            nResult = GetLongPathName(wstrPath.c_str(), pwchPath, nLengthCh);
-            if (0 == nResult)
+            if (PathFileExists(wstrPath.c_str()))
             {
-                // COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"GetLongPathName (%s) failed. msdn(%d)", wstrPath.c_str(), GetLastError());
-                wstrRet = wstrPath;
-                break;
+                nResult = GetLongPathName(wstrPath.c_str(), pwchPath, nLengthCh);
+                if (0 == nResult)
+                {
+                    // COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"GetLongPathName (%s) failed. msdn(%d)", wstrPath.c_str(), GetLastError());
+                    wstrRet = wstrPath;
+                    break;
+                }
+            }
+            else
+            {
+                pwchFileName = PathFindFileName(wstrPath.c_str());
+                if (NULL != pwchFileName)
+                {
+                    wstrParent = GetParent(wstrPath);
+                    if (wstrParent.length())
+                    {
+                        wstrParent = ToLong(wstrParent);
+
+                        wstrRet = wstrParent;
+                        wstrRet += L"\\";
+                        wstrRet += pwchFileName;
+                        break;
+                    }
+                }
             }
 
             if (nResult < nLengthCh)
