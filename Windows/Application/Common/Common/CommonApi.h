@@ -26,6 +26,7 @@
 #include "CommonSingleInstance.h"
 #include "CommonStringConvert.h"
 #include "CommonStruct.h"
+#include "CommonTime.h"
 #include "CommonTool.h"
 
 #ifndef Common_lib
