@@ -49,6 +49,8 @@ COMMON_ERROR
                     }
 
                     m_wstrTempDir = wchTempDir;
+
+                    m_wstrTempDir = CCommonPath::GetInstance()->ToLong(m_wstrTempDir);
                 }
 
                 SetInitFlag(TRUE);
