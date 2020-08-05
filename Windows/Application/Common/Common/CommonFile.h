@@ -88,6 +88,22 @@ public:
         _In_ CONST std::wstring & wstrPath
         );
 
+    BOOL
+        ReadFile(
+        __in HANDLE hFile,
+        __out_bcount_part_opt(nNumberOfBytesToRead, *lpNumberOfBytesRead) __out_data_source(FILE) LPVOID lpBuffer,
+        __in DWORD nNumberOfBytesToRead,
+        __out_opt LPDWORD lpNumberOfBytesRead
+        );
+
+    BOOL
+        WriteFile(
+        __in HANDLE hFile,
+        __in_bcount_opt(nNumberOfBytesToWrite) LPCVOID lpBuffer,
+        __in DWORD nNumberOfBytesToWrite,
+        __out_opt LPDWORD lpNumberOfBytesWritten
+        );
+
 private:
     CCommonFile();
 

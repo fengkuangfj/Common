@@ -592,6 +592,12 @@ std::wstring
             break;
         }
 
+        if (NULL == StrChrI(wstrPath.c_str() , L'~'))
+        {
+            wstrRet = wstrPath;
+            break;
+        }
+
         nLengthCh = COMMON_MAX_PATH;
 
         do

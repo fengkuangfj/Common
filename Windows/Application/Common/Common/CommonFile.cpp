@@ -609,6 +609,144 @@ HANDLE
     return hRet;
 }
 
+BOOL
+    CCommonFile::ReadFile(
+    __in HANDLE hFile,
+    __out_bcount_part_opt(nNumberOfBytesToRead, *lpNumberOfBytesRead) __out_data_source(FILE) LPVOID lpBuffer,
+    __in DWORD nNumberOfBytesToRead,
+    __out_opt LPDWORD lpNumberOfBytesRead
+    )
+{
+    BOOL bRet = FALSE;
+
+    OVERLAPPED Overlapped = {0};
+    LARGE_INTEGER liPosition = {0};
+
+
+    do
+    {
+        bRet = ::ReadFile(
+            hFile,
+            lpBuffer,
+            nNumberOfBytesToRead,
+            lpNumberOfBytesRead,
+            NULL
+            );
+        if (!bRet)
+        {
+            if (ERROR_INVALID_PARAMETER == GetLastError())
+            {
+                Overlapped.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+                liPosition.QuadPart = GetPositon(hFile);
+
+                Overlapped.Offset = liPosition.LowPart;
+                Overlapped.OffsetHigh = liPosition.HighPart;
+
+                bRet = ::ReadFile(
+                    hFile,
+                    lpBuffer,
+                    nNumberOfBytesToRead,
+                    lpNumberOfBytesRead,
+                    &Overlapped
+                    );
+                if (!bRet)
+                {
+                    if (ERROR_IO_PENDING == GetLastError())
+                    {
+#pragma warning(push)
+#pragma warning(disable : 6387)
+                        bRet = GetOverlappedResult(
+                            hFile,
+                            &Overlapped,
+                            lpNumberOfBytesRead,
+                            TRUE
+                            );
+#pragma warning(pop)
+                    }
+                }
+            }
+        }
+    } while (FALSE);
+
+    if (NULL != Overlapped.hEvent)
+    {
+        CloseHandle(Overlapped.hEvent);
+        Overlapped.hEvent = NULL;
+    }
+
+    return bRet;
+}
+
+BOOL
+    CCommonFile::WriteFile(
+    __in HANDLE hFile,
+    __in_bcount_opt(nNumberOfBytesToWrite) LPCVOID lpBuffer,
+    __in DWORD nNumberOfBytesToWrite,
+    __out_opt LPDWORD lpNumberOfBytesWritten
+    )
+{
+    BOOL bRet = FALSE;
+
+    OVERLAPPED Overlapped = {0};
+    LARGE_INTEGER liPosition = {0};
+
+
+    do
+    {
+        bRet = ::WriteFile(
+            hFile,
+            lpBuffer,
+            nNumberOfBytesToWrite,
+            lpNumberOfBytesWritten,
+            NULL
+            );
+        if (!bRet)
+        {
+            if (ERROR_INVALID_PARAMETER == GetLastError())
+            {
+                Overlapped.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+                liPosition.QuadPart = GetPositon(hFile);
+
+                Overlapped.Offset = liPosition.LowPart;
+                Overlapped.OffsetHigh = liPosition.HighPart;
+
+                bRet = ::WriteFile(
+                    hFile,
+                    lpBuffer,
+                    nNumberOfBytesToWrite,
+                    lpNumberOfBytesWritten,
+                    &Overlapped
+                    );
+                if (!bRet)
+                {
+                    if (ERROR_IO_PENDING == GetLastError())
+                    {
+#pragma warning(push)
+#pragma warning(disable : 6387)
+                        bRet = GetOverlappedResult(
+                            hFile,
+                            &Overlapped,
+                            lpNumberOfBytesWritten,
+                            TRUE
+                            );
+#pragma warning(pop)
+                    }
+                }
+            }
+        }
+    } while (FALSE);
+
+    if (NULL != Overlapped.hEvent)
+    {
+        CloseHandle(Overlapped.hEvent);
+        Overlapped.hEvent = NULL;
+    }
+
+    return bRet;
+}
+
 CCommonFile::CCommonFile()
 {
     ;
