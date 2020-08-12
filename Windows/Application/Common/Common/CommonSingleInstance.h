@@ -9,7 +9,7 @@ template<class T>
 class CCommonSingleInstance
 {
 public:
-    static T * GetInstance()
+    static T * WINAPI GetInstance()
     {
         if (NULL == ms_pInstance)
         {
@@ -23,7 +23,7 @@ public:
         return ms_pInstance;
     }
 
-    static VOID ReleaseInstance()
+    static VOID WINAPI ReleaseInstance()
     {
         if (NULL != ms_pInstance)
         {
