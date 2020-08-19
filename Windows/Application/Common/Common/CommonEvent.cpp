@@ -55,15 +55,22 @@ HANDLE
 {
     HANDLE hRet = NULL;
 
+    std::wstring wstrEvent = L"";
+
 
     do
     {
-        hRet = CreateFileHandlingFlag(wstrPath, bConvertFormat);
+        wstrEvent = GetFileHandlingEventName(wstrPath, bConvertFormat);
+        if (!wstrEvent.length())
+        {
+            break;
+        }
+
+        hRet = CreateEvent(NULL, FALSE, FALSE, wstrEvent.c_str());
     } while (FALSE);
 
     return hRet;
 }
-
 
 VOID
     CCommonEvent::ClearFileHandlingFlag(
@@ -91,17 +98,19 @@ BOOL
     BOOL bRet = FALSE;
 
     HANDLE hEvent = NULL;
+    std::wstring wstrEvent = L"";
 
 
     do
     {
-        hEvent = CreateFileHandlingFlag(wstrPath, bConvertFormat);
-        if (NULL == hEvent)
+        wstrEvent = GetFileHandlingEventName(wstrPath, bConvertFormat);
+        if (!wstrEvent.length())
         {
             break;
         }
 
-        if (ERROR_ALREADY_EXISTS != GetLastError())
+        hEvent = OpenEvent(EVENT_ALL_ACCESS, FALSE, wstrEvent.c_str());
+        if (NULL == hEvent)
         {
             break;
         }
@@ -124,15 +133,13 @@ CCommonEvent::~CCommonEvent()
     ;
 }
 
-HANDLE
-    CCommonEvent::CreateFileHandlingFlag(
+std::wstring
+    CCommonEvent::GetFileHandlingEventName(
     _In_ CONST std::wstring & wstrPath,
     _In_ CONST BOOL & bConvertFormat
     )
 {
-    HANDLE hRet = NULL;
-
-    std::wstring wstrEvent = L"";
+    std::wstring wstrRet = L"";
 
 
     do
@@ -142,26 +149,20 @@ HANDLE
             break;
         }
 
-        wstrEvent = wstrPath;
+        wstrRet = wstrPath;
 
         if (bConvertFormat)
         {
-            wstrEvent = CCommonPath::GetInstance()->ToLong(wstrEvent);
+            wstrRet = CCommonPath::GetInstance()->ToLong(wstrRet);
 
-            CCommonStringConvert::GetInstance()->ToLower(wstrEvent);
+            CCommonStringConvert::GetInstance()->ToLower(wstrRet);
         }
 
-        CCommonStringConvert::GetInstance()->Replace(wstrEvent, L"\\", L"_");
+        CCommonStringConvert::GetInstance()->Replace(wstrRet, L"\\", L"_");
 
-        wstrEvent += L"_";
-        wstrEvent += L"{D7932C6D-9115-491A-B713-7BDE7C05667F}";
-
-        hRet = CreateEvent(NULL, FALSE, FALSE, wstrEvent.c_str());
-        if (NULL == hRet)
-        {
-            break;
-        }
+        wstrRet += L"_";
+        wstrRet += L"{D7932C6D-9115-491A-B713-7BDE7C05667F}";
     } while (FALSE);
 
-    return hRet;
+    return wstrRet;
 }

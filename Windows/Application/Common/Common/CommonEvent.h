@@ -3,7 +3,6 @@
 
 #include "CommonPublic.h"
 
-#include "CommonError.h"
 #include "CommonPath.h"
 #include "CommonSingleInstance.h"
 
@@ -40,8 +39,8 @@ private:
 
     ~CCommonEvent();
 
-    HANDLE
-        CreateFileHandlingFlag(
+    std::wstring
+        GetFileHandlingEventName(
         _In_ CONST std::wstring & wstrPath,
         _In_ CONST BOOL & bConvertFormat
         );
