@@ -7,6 +7,7 @@
 #include "CommonDebug.h"
 #include "CommonEnum.h"
 #include "CommonError.h"
+#include "CommonEvent.h"
 #include "CommonFile.h"
 #include "CommonGlobalVariable.h"
 #include "CommonHookEnv.h"

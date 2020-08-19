@@ -277,6 +277,31 @@ VOID
     return ;
 }
 
+VOID
+    CCommonStringConvert::Replace(
+    _Inout_ std::wstring & wstrContent,
+    _In_ CONST std::wstring & wstrReplace,
+    _In_ CONST std::wstring & wstrDest
+    )
+{
+    WCHAR pBuf[1]={L'\0'};
+
+
+    while (TRUE)
+    {
+        size_t pos = wstrContent.find(wstrReplace);
+        if (pos == std::wstring::npos)
+        {
+            break;
+        }
+
+        wstrContent.replace(pos, wstrReplace.length(), pBuf, 0);
+        wstrContent.insert(pos, wstrDest);
+    }
+
+    return;
+}
+
 CCommonStringConvert::CCommonStringConvert()
 {
     ;

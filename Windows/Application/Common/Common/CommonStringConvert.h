@@ -46,6 +46,13 @@ public:
         _Inout_ std::wstring & wstrSrc
         );
 
+    VOID
+        Replace(
+        _Inout_ std::wstring & wstrContent,
+        _In_ CONST std::wstring & wstrReplace,
+        _In_ CONST std::wstring & wstrDest
+        );
+
 private:
     CCommonStringConvert();
 
