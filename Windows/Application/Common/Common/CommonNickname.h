@@ -21,3 +21,69 @@ typedef
     (WINAPI * Kernelbase_dll_ExitProcess_Proc_Type)(
     __in UINT uExitCode
     );
+
+typedef
+    HRESULT
+    ( WINAPI * Kernel32_dll_CopyFile2_Proc_Type)(
+    PCWSTR pwszExistingFileName,
+    PCWSTR pwszNewFileName,
+    VOID *pExtendedParameters
+    );
+
+typedef
+    BOOL
+    ( WINAPI * Kernel32_dll_CopyFileW_Proc_Type)(
+    __in LPCWSTR lpExistingFileName,
+    __in LPCWSTR lpNewFileName,
+    __in BOOL bFailIfExists
+    );
+
+typedef
+    BOOL
+    ( WINAPI * Kernel32_dll_CopyFileExW_Proc_Type)(
+    __in LPCWSTR lpExistingFileName,
+    __in LPCWSTR lpNewFileName,
+    __in_opt LPPROGRESS_ROUTINE lpProgressRoutine,
+    __in_opt LPVOID lpData,
+    __in_opt LPBOOL pbCancel,
+    __in DWORD dwCopyFlags
+    );
+
+typedef
+    BOOL
+    ( WINAPI * Kernel32_dll_CopyFileTransactedW_Proc_Type)(
+    __in LPCWSTR lpExistingFileName,
+    __in LPCWSTR lpNewFileName,
+    __in_opt LPPROGRESS_ROUTINE lpProgressRoutine,
+    __in_opt LPVOID lpData,
+    __in_opt LPBOOL pbCancel,
+    __in DWORD dwCopyFlags,
+    __in HANDLE hTransaction
+    );
+
+typedef
+    HRESULT
+    ( WINAPI * KernelBase_dll_CopyFile2_Proc_Type)(
+    PCWSTR pwszExistingFileName,
+    PCWSTR pwszNewFileName,
+    VOID *pExtendedParameters
+    );
+
+typedef
+    BOOL
+    ( WINAPI * KernelBase_dll_CopyFileW_Proc_Type)(
+    __in LPCWSTR lpExistingFileName,
+    __in LPCWSTR lpNewFileName,
+    __in BOOL bFailIfExists
+    );
+
+typedef
+    BOOL
+    ( WINAPI * KernelBase_dll_CopyFileExW_Proc_Type)(
+    __in LPCWSTR lpExistingFileName,
+    __in LPCWSTR lpNewFileName,
+    __in_opt LPPROGRESS_ROUTINE lpProgressRoutine,
+    __in_opt LPVOID lpData,
+    __in_opt LPBOOL pbCancel,
+    __in DWORD dwCopyFlags
+    );
