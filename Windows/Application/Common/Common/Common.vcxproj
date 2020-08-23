@@ -103,6 +103,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>../Depends/boost/stage/$(Platform)/lib</AdditionalLibraryDirectories>
+      <TargetMachine>MachineX86</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -122,6 +123,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>../Depends/boost/stage/$(Platform)/lib</AdditionalLibraryDirectories>
+      <TargetMachine>MachineX64</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,6 +147,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>../Depends/boost/stage/$(Platform)/lib</AdditionalLibraryDirectories>
+      <TargetMachine>MachineX86</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -168,6 +171,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>../Depends/boost/stage/$(Platform)/lib</AdditionalLibraryDirectories>
+      <TargetMachine>MachineX64</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
