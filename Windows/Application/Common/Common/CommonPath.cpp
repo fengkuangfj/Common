@@ -53,6 +53,13 @@ COMMON_ERROR
                     m_wstrTempDir = CCommonPath::GetInstance()->ToLong(m_wstrTempDir);
                 }
 
+                CommonError = CCommonNtHelper::GetInstance()->Init();
+                if (COMMON_ERROR_SUCCESS != CommonError)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonNtHelper::GetInstance()->Init failed. CommonError(%d)", CommonError);
+                    break;
+                }
+
                 SetInitFlag(TRUE);
             }
         }
@@ -76,6 +83,12 @@ COMMON_ERROR
             CommonWriteLock lock(ms_InitFlagLock);
             if (GetInitFlag())
             {
+                CommonError = CCommonNtHelper::GetInstance()->Unload();
+                if (COMMON_ERROR_SUCCESS != CommonError)
+                {
+                    COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"CCommonNtHelper::GetInstance()->Unload failed. CommonError(%d)", CommonError);
+                }
+
                 SetInitFlag(FALSE);
             }
         }
@@ -566,6 +579,78 @@ std::wstring
     {
         free(pwchTemp);
         pwchTemp = NULL;
+    }
+
+    return wstrRet;
+}
+
+std::wstring
+    CCommonPath::GetPathByFileId(
+    _In_ CONST OBJECT_ATTRIBUTES * pObjectAttributes
+    )
+{
+    std::wstring wstrRet = L"";
+
+    NTSTATUS ntStatus = STATUS_UNSUCCESSFUL;
+    HANDLE hFile = NULL;
+    IO_STATUS_BLOCK IoStatusBlock = { 0 };
+
+
+    do
+    {
+        if (NULL == pObjectAttributes)
+        {
+            break;
+        }
+
+        ntStatus = CCommonNtHelper::GetInstance()->NtOpenFile(
+            &hFile,
+            FILE_GENERIC_READ,
+            (POBJECT_ATTRIBUTES)pObjectAttributes,
+            &IoStatusBlock,
+            FILE_SHARE_READ | FILE_SHARE_WRITE,
+            FILE_OPEN_BY_FILE_ID | FILE_COMPLETE_IF_OPLOCKED
+            );
+        if (STATUS_SHARING_VIOLATION == ntStatus)
+        {
+            ntStatus = CCommonNtHelper::GetInstance()->NtOpenFile(
+                &hFile,
+                FILE_GENERIC_READ,
+                (POBJECT_ATTRIBUTES)pObjectAttributes,
+                &IoStatusBlock,
+                FILE_SHARE_READ ,
+                FILE_OPEN_BY_FILE_ID | FILE_COMPLETE_IF_OPLOCKED
+                );
+            if (STATUS_SHARING_VIOLATION == ntStatus)
+            {
+                ntStatus = CCommonNtHelper::GetInstance()->NtOpenFile(
+                    &hFile,
+                    FILE_GENERIC_READ,
+                    (POBJECT_ATTRIBUTES)pObjectAttributes,
+                    &IoStatusBlock,
+                    FILE_SHARE_WRITE,
+                    FILE_OPEN_BY_FILE_ID | FILE_COMPLETE_IF_OPLOCKED
+                    );
+            }
+        }
+
+        if (!NT_SUCCESS(ntStatus))
+        {
+            break;
+        }
+
+        if (NULL == hFile)
+        {
+            break;
+        }
+
+        wstrRet = GetPath(hFile, TRUE);
+    } while (FALSE);
+
+    if (NULL != hFile)
+    {
+        CCommonNtHelper::GetInstance()->NtClose(hFile);
+        hFile = NULL;
     }
 
     return wstrRet;

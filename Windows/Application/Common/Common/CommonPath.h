@@ -5,6 +5,7 @@
 
 #include "CommonLog.h"
 #include "CommonNtDefine.h"
+#include "CommonNtHelper.h"
 #include "CommonSingleInstance.h"
 
 class CCommonPath : public CCommonSingleInstance<CCommonPath>
@@ -34,6 +35,11 @@ public:
 
     std::wstring
         GetPath(
+        _In_ CONST OBJECT_ATTRIBUTES * pObjectAttributes
+        );
+
+    std::wstring
+        GetPathByFileId(
         _In_ CONST OBJECT_ATTRIBUTES * pObjectAttributes
         );
 

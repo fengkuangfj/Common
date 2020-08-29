@@ -19,6 +19,21 @@ public:
         Unload();
 
     NTSTATUS
+        NtClose(
+        IN HANDLE Handle
+        );
+
+    NTSTATUS
+        NtOpenFile(
+        _Out_ PHANDLE FileHandle,
+        _In_ ACCESS_MASK DesiredAccess,
+        _In_ POBJECT_ATTRIBUTES ObjectAttributes,
+        _Out_ PIO_STATUS_BLOCK IoStatusBlock,
+        _In_ ULONG ShareAccess,
+        _In_ ULONG OpenOptions
+        );
+
+    NTSTATUS
         NtQueryObject (
         _In_opt_ HANDLE Handle,
         _In_ OBJECT_INFORMATION_CLASS ObjectInformationClass,
@@ -54,6 +69,8 @@ public:
 
 private:
     HMODULE m_hNtdll_dll;
+    Ntdll_dll_NtClose_Proc_Type m_Ntdll_dll_NtClose;
+    Ntdll_dll_NtOpenFile_Proc_Type m_Ntdll_dll_NtOpenFile;
     Ntdll_dll_NtQueryObject_Proc_Type m_Ntdll_dll_NtQueryObject;
     Ntdll_dll_NtQueryInformationFile_Proc_Type m_Ntdll_dll_NtQueryInformationFile;
     Ntdll_dll_NtQueryInformationProcess_Proc_Type m_Ntdll_dll_NtQueryInformationProcess;

@@ -22,6 +22,20 @@ COMMON_ERROR
                     break;
                 }
 
+                m_Ntdll_dll_NtClose = (Ntdll_dll_NtClose_Proc_Type)GetProcAddress(m_hNtdll_dll, "NtClose");
+                if (NULL == m_Ntdll_dll_NtClose)
+                {
+                    CommonError = COMMON_ERROR_GET_PROC_ADDRESS_FAILED;
+                    COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"NtClose", GetLastError());
+                }
+
+                m_Ntdll_dll_NtOpenFile = (Ntdll_dll_NtOpenFile_Proc_Type)GetProcAddress(m_hNtdll_dll, "NtOpenFile");
+                if (NULL == m_Ntdll_dll_NtOpenFile)
+                {
+                    CommonError = COMMON_ERROR_GET_PROC_ADDRESS_FAILED;
+                    COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"GetProcAddress (%s) failed. msdn(%d)", L"NtOpenFile", GetLastError());
+                }
+
                 m_Ntdll_dll_NtQueryObject = (Ntdll_dll_NtQueryObject_Proc_Type)GetProcAddress(m_hNtdll_dll, "NtQueryObject");
                 if (NULL == m_Ntdll_dll_NtQueryObject)
                 {
@@ -73,6 +87,8 @@ COMMON_ERROR
             CommonWriteLock lock(ms_InitFlagLock);
             if (GetInitFlag())
             {
+                m_Ntdll_dll_NtClose = NULL;
+                m_Ntdll_dll_NtOpenFile = NULL;
                 m_Ntdll_dll_NtQueryObject = NULL;
                 m_Ntdll_dll_NtQueryInformationFile = NULL;
                 m_Ntdll_dll_NtQueryInformationProcess = NULL;
@@ -88,6 +104,50 @@ COMMON_ERROR
     } while (FALSE);
 
     return CommonError;
+}
+
+NTSTATUS
+    CCommonNtHelper::NtClose(
+    IN HANDLE Handle
+    )
+{
+    if (NULL != m_Ntdll_dll_NtClose)
+    {
+        return m_Ntdll_dll_NtClose(
+            Handle
+            );
+    }
+    else
+    {
+        return STATUS_UNSUCCESSFUL;
+    }
+}
+
+NTSTATUS
+    CCommonNtHelper::NtOpenFile(
+    _Out_ PHANDLE FileHandle,
+    _In_ ACCESS_MASK DesiredAccess,
+    _In_ POBJECT_ATTRIBUTES ObjectAttributes,
+    _Out_ PIO_STATUS_BLOCK IoStatusBlock,
+    _In_ ULONG ShareAccess,
+    _In_ ULONG OpenOptions
+    )
+{
+    if (NULL != m_Ntdll_dll_NtOpenFile)
+    {
+        return m_Ntdll_dll_NtOpenFile(
+            FileHandle,
+            DesiredAccess,
+            ObjectAttributes,
+            IoStatusBlock,
+            ShareAccess,
+            OpenOptions
+            );
+    }
+    else
+    {
+        return STATUS_UNSUCCESSFUL;
+    }
 }
 
 NTSTATUS
@@ -187,6 +247,8 @@ VOID
 CCommonNtHelper::CCommonNtHelper()
 {
     m_hNtdll_dll = NULL;
+    m_Ntdll_dll_NtClose = NULL;
+    m_Ntdll_dll_NtOpenFile = NULL;
     m_Ntdll_dll_NtQueryObject = NULL;
     m_Ntdll_dll_NtQueryInformationFile = NULL;
     m_Ntdll_dll_NtQueryInformationProcess = NULL;
@@ -196,6 +258,8 @@ CCommonNtHelper::CCommonNtHelper()
 CCommonNtHelper::~CCommonNtHelper()
 {
     m_hNtdll_dll = NULL;
+    m_Ntdll_dll_NtClose = NULL;
+    m_Ntdll_dll_NtOpenFile = NULL;
     m_Ntdll_dll_NtQueryObject = NULL;
     m_Ntdll_dll_NtQueryInformationFile = NULL;
     m_Ntdll_dll_NtQueryInformationProcess = NULL;
