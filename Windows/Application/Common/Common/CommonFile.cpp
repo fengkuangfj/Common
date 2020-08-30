@@ -604,6 +604,48 @@ HANDLE
         {
             break;
         }
+
+        hRet = CreateFile(
+            wstrPath.c_str(),
+            GENERIC_READ,
+            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+            NULL,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL
+            );
+        if (INVALID_HANDLE_VALUE != hRet)
+        {
+            break;
+        }
+
+        hRet = CreateFile(
+            wstrPath.c_str(),
+            GENERIC_READ,
+            FILE_SHARE_READ | FILE_SHARE_DELETE,
+            NULL,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL
+            );
+        if (INVALID_HANDLE_VALUE != hRet)
+        {
+            break;
+        }
+
+        hRet = CreateFile(
+            wstrPath.c_str(),
+            GENERIC_READ,
+            FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+            NULL,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL
+            );
+        if (INVALID_HANDLE_VALUE != hRet)
+        {
+            break;
+        }
     } while (FALSE);
 
     return hRet;

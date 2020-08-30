@@ -611,7 +611,7 @@ std::wstring
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             FILE_OPEN_BY_FILE_ID | FILE_COMPLETE_IF_OPLOCKED
             );
-        if (STATUS_SHARING_VIOLATION == ntStatus)
+        if (!NT_SUCCESS(ntStatus))
         {
             ntStatus = CCommonNtHelper::GetInstance()->NtOpenFile(
                 &hFile,
@@ -621,7 +621,7 @@ std::wstring
                 FILE_SHARE_READ ,
                 FILE_OPEN_BY_FILE_ID | FILE_COMPLETE_IF_OPLOCKED
                 );
-            if (STATUS_SHARING_VIOLATION == ntStatus)
+            if (!NT_SUCCESS(ntStatus))
             {
                 ntStatus = CCommonNtHelper::GetInstance()->NtOpenFile(
                     &hFile,
@@ -631,12 +631,44 @@ std::wstring
                     FILE_SHARE_WRITE,
                     FILE_OPEN_BY_FILE_ID | FILE_COMPLETE_IF_OPLOCKED
                     );
+                if (!NT_SUCCESS(ntStatus))
+                {
+                    ntStatus = CCommonNtHelper::GetInstance()->NtOpenFile(
+                        &hFile,
+                        FILE_GENERIC_READ,
+                        (POBJECT_ATTRIBUTES)pObjectAttributes,
+                        &IoStatusBlock,
+                        FILE_SHARE_READ | FILE_SHARE_WRITE |FILE_SHARE_DELETE,
+                        FILE_OPEN_BY_FILE_ID | FILE_COMPLETE_IF_OPLOCKED
+                        );
+                    if (!NT_SUCCESS(ntStatus))
+                    {
+                        ntStatus = CCommonNtHelper::GetInstance()->NtOpenFile(
+                            &hFile,
+                            FILE_GENERIC_READ,
+                            (POBJECT_ATTRIBUTES)pObjectAttributes,
+                            &IoStatusBlock,
+                            FILE_SHARE_READ | FILE_SHARE_DELETE,
+                            FILE_OPEN_BY_FILE_ID | FILE_COMPLETE_IF_OPLOCKED
+                            );
+                        if (!NT_SUCCESS(ntStatus))
+                        {
+                            ntStatus = CCommonNtHelper::GetInstance()->NtOpenFile(
+                                &hFile,
+                                FILE_GENERIC_READ,
+                                (POBJECT_ATTRIBUTES)pObjectAttributes,
+                                &IoStatusBlock,
+                                FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                                FILE_OPEN_BY_FILE_ID | FILE_COMPLETE_IF_OPLOCKED
+                                );
+                            if (!NT_SUCCESS(ntStatus))
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
             }
-        }
-
-        if (!NT_SUCCESS(ntStatus))
-        {
-            break;
         }
 
         if (NULL == hFile)
