@@ -549,7 +549,7 @@ std::wstring
 }
 
 std::wstring
-    CCommonPath::GetPath(
+    CCommonPath::GetString(
     _In_ CONST WCHAR * pwchBuffer,
     _In_ CONST ULONG ulLengthCh
     )
@@ -570,9 +570,7 @@ std::wstring
 
         memcpy_s(pwchTemp, (ulLengthCh + 1) * sizeof(WCHAR), pwchBuffer, ulLengthCh * sizeof(WCHAR));
 
-        wstrRet = ToLong(pwchTemp);
-
-        CCommonStringConvert::GetInstance()->ToLower(wstrRet);
+        wstrRet = pwchTemp;
     } while (FALSE);
 
     if (NULL != pwchTemp)

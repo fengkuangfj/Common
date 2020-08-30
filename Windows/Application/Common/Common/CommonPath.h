@@ -56,7 +56,7 @@ public:
         );
 
     std::wstring
-        GetPath(
+        GetString(
         _In_ CONST WCHAR * pwchBuffer,
         _In_ CONST ULONG ulLengthCh
         );
