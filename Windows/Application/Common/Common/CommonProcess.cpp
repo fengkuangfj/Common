@@ -269,6 +269,37 @@ std::wstring
     return wstrRet;
 }
 
+std::wstring
+    CCommonProcess::GetName(
+    _In_ CONST DWORD & dwPid
+    )
+{
+    std::wstring wstrRet = L"";
+
+    std::wstring wstrPath = L"";
+    WCHAR * pName = NULL;
+
+
+    do
+    {
+        wstrPath = GetPath(dwPid);
+        if (!wstrPath.length())
+        {
+            break;
+        }
+
+        pName = PathFindFileName(wstrPath.c_str());
+        if (NULL == pName)
+        {
+            break;
+        }
+
+        wstrRet = pName;
+    } while (FALSE);
+
+    return wstrRet;
+}
+
 CCommonProcess::CCommonProcess()
 {
     ;

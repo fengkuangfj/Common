@@ -27,6 +27,7 @@
 #include "CommonSingleInstance.h"
 #include "CommonStringConvert.h"
 #include "CommonStruct.h"
+#include "CommonThread.h"
 #include "CommonTime.h"
 #include "CommonTool.h"
 

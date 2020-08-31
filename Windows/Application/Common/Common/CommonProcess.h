@@ -29,6 +29,11 @@ public:
         _In_ CONST DWORD & dwPid
         );
 
+    std::wstring
+        GetName(
+        _In_ CONST DWORD & dwPid
+        );
+
     DWORD
         GetParentPid( );
 

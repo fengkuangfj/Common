@@ -87,3 +87,15 @@ typedef
     __in_opt LPBOOL pbCancel,
     __in DWORD dwCopyFlags
     );
+
+typedef
+    unsigned
+    (__stdcall* _beginthreadex_proc_type)(
+    void*
+    );
+
+typedef
+    unsigned
+    (__stdcall* _endthreadex_proc_type)(
+    void*
+    );
