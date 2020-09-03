@@ -153,7 +153,16 @@ std::wstring
 
         if (!ReadProcessMemory(hProcess, Peb.ProcessParameters, &RtlUserProcessParameters, sizeof(RtlUserProcessParameters), &NumberOfBytesRead))
         {
-            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"ReadProcessMemory failed. msdn(%d)", GetLastError());
+            if (ERROR_PARTIAL_COPY == GetLastError()
+                || ERROR_ACCESS_DENIED == GetLastError())
+            {
+                COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"ReadProcessMemory failed. msdn(%d)", GetLastError());
+            }
+            else
+            {
+                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"ReadProcessMemory failed. msdn(%d)", GetLastError());
+            }
+
             break;
         }
 
@@ -172,7 +181,16 @@ std::wstring
 
         if (!ReadProcessMemory(hProcess, RtlUserProcessParameters.ImagePathName.Buffer, pwchPath, RtlUserProcessParameters.ImagePathName.Length + sizeof(WCHAR), &NumberOfBytesRead))
         {
-            COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"ReadProcessMemory failed. msdn(%d)", GetLastError());
+            if (ERROR_PARTIAL_COPY == GetLastError()
+                || ERROR_ACCESS_DENIED == GetLastError())
+            {
+                COMMON_LOGW(COMMON_LOG_LEVEL_WARNING, L"ReadProcessMemory failed. msdn(%d)", GetLastError());
+            }
+            else
+            {
+                COMMON_LOGW(COMMON_LOG_LEVEL_ERROR, L"ReadProcessMemory failed. msdn(%d)", GetLastError());
+            }
+
             break;
         }
 
