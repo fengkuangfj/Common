@@ -30,6 +30,7 @@
 #include "CommonThread.h"
 #include "CommonTime.h"
 #include "CommonTool.h"
+#include "CommonVistaHelper.h"
 
 #ifndef Common_lib
 #ifdef _DEBUG
