@@ -512,8 +512,7 @@ std::wstring
 
         TransitionToLetter(pwchName, nNameSizeCh);
 
-        wstrPathRootDirectory = GetParent(pwchName);
-        if (wstrPathRootDirectory.length())
+        if (!PathIsRelative(pwchName))
         {
             wstrRet = pwchName;
         }

@@ -176,6 +176,11 @@ BOOL
             break;
         }
 
+        if (PathIsRoot(wstrPath.c_str()))
+        {
+            break;
+        }
+
         hFind = FindFirstFile(wstrPath.c_str(), &Win32FindData);
         if (INVALID_HANDLE_VALUE == hFind)
         {
