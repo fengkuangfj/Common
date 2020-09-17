@@ -166,6 +166,7 @@ BOOL
     HANDLE hFind = INVALID_HANDLE_VALUE;
     WIN32_FIND_DATA Win32FindData = { 0 };
     LARGE_INTEGER liTemp = {0};
+    std::wstring wstrTemp = L"";
 
 
     do
@@ -176,17 +177,23 @@ BOOL
             break;
         }
 
-        if (PathIsRoot(wstrPath.c_str()))
-        {
-            break;
-        }
-
         hFind = FindFirstFile(wstrPath.c_str(), &Win32FindData);
         if (INVALID_HANDLE_VALUE == hFind)
         {
             if ( ERROR_PATH_NOT_FOUND == GetLastError()
                 || ERROR_FILE_NOT_FOUND == GetLastError() )
             {
+                if (ERROR_FILE_NOT_FOUND == GetLastError())
+                {
+                    wstrTemp = wstrPath;
+                    wstrTemp += L"\\";
+
+                    if (PathIsRoot(wstrTemp.c_str()))
+                    {
+                        break;
+                    }
+                }
+
                 bRet = TRUE;
             }
 
