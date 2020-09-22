@@ -143,6 +143,7 @@ BOOL
     BOOL bRet = FALSE;
 
     LONG lResult = 0;
+    int nThreadPriority = GetThreadPriority(GetCurrentThread());
 
     dwCurrentTid = GetCurrentThreadId();
 
@@ -164,6 +165,11 @@ BOOL
                 InterlockedIncrement(&m_lLockRef);
                 break;
             }
+        }
+
+        if (THREAD_PRIORITY_NORMAL < nThreadPriority)
+        {
+            Sleep(1);
         }
     } while (TRUE);
 
