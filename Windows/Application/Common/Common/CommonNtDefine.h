@@ -1014,3 +1014,13 @@ typedef
     _In_ ULONG HandleAttributes,
     _In_ ULONG Options
     );
+
+typedef
+    NTSTATUS
+    ( NTAPI * Ntdll_dll_NtQueryInformationByName_Proc_Type)(
+    POBJECT_ATTRIBUTES ObjectAttributes,
+    PIO_STATUS_BLOCK IoStatusBlock,
+    PVOID FileInformation,
+    ULONG Length,
+    FILE_INFORMATION_CLASS FileInformationClass
+    );
