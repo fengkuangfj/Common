@@ -143,7 +143,7 @@ BOOL
     BOOL bRet = FALSE;
 
     LONG lResult = 0;
-    int nThreadPriority = GetThreadPriority(GetCurrentThread());
+    // int nThreadPriority = GetThreadPriority(GetCurrentThread());
 
     dwCurrentTid = GetCurrentThreadId();
 
@@ -167,7 +167,7 @@ BOOL
             }
         }
 
-        if (THREAD_PRIORITY_NORMAL < nThreadPriority)
+        if (THREAD_PRIORITY_NORMAL < GetThreadPriority(GetCurrentThread()))
         {
             Sleep(1);
         }
