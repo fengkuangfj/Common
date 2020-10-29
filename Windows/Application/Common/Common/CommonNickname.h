@@ -5,6 +5,7 @@
 
 #include <boost/thread/locks.hpp>
 #include <boost/thread/shared_mutex.hpp>
+#include <Objbase.h>
 
 typedef boost::shared_mutex CommonMutex;
 typedef boost::shared_lock<CommonMutex> CommonReadLock;
@@ -98,4 +99,17 @@ typedef
     unsigned
     (__stdcall* _endthreadex_proc_type)(
     void*
+    );
+
+typedef
+    HRESULT
+    (STDAPICALLTYPE * Ole32_dll_StgCreateStorageEx_Proc_Type) (
+    __in_opt __nullterminated const WCHAR* pwcsName,
+    __in DWORD grfMode,
+    __in DWORD stgfmt, // enum
+    __in DWORD grfAttrs,
+    __inout_opt STGOPTIONS* pStgOptions,
+    __in_opt PSECURITY_DESCRIPTOR pSecurityDescriptor,
+    __in REFIID riid,
+    __deref_out void** ppObjectOpen
     );
