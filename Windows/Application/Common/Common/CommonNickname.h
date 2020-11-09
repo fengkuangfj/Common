@@ -113,3 +113,12 @@ typedef
     __in REFIID riid,
     __deref_out void** ppObjectOpen
     );
+
+typedef
+    HRESULT
+    (STDAPICALLTYPE * Ole32_dll_StgCreateDocfile_Proc_Type) (
+    __in_opt __nullterminated const WCHAR* pwcsName,
+    __in DWORD grfMode,
+    __reserved DWORD reserved,
+    __deref_out IStorage** ppstgOpen
+    );
