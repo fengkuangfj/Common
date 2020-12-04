@@ -915,6 +915,7 @@ VOID
 {
     WCHAR * pwchLetter = NULL;
     BOOL bDevice = FALSE;
+    BOOL bFind = FALSE;
 
 
     do
@@ -964,13 +965,6 @@ VOID
 
         if (bDevice)
         {
-            if (12 <= wcslen(pwchPath)
-                && 0 == _wcsnicmp(pwchPath, L"\\Device\\Mup", 11))
-            {
-                MoveMemory(pwchPath + 1, pwchPath + 11, (wcslen(pwchPath) - 10) * sizeof(WCHAR));
-                break;
-            }
-
             pwchLetter = (LPTSTR)calloc(1, 3 * sizeof(TCHAR));
             if (NULL == pwchLetter)
             {
@@ -996,6 +990,7 @@ VOID
                     {
                         MoveMemory(pwchPath, pwchLetter, 4);
                         MoveMemory(pwchPath + 2, pwchPath + wcslen(wchDevice), (wcslen(pwchPath) + 1 - wcslen(wchDevice)) * sizeof(WCHAR));
+                        bFind = TRUE;
                         break;
                     }
                 }
@@ -1010,6 +1005,16 @@ VOID
 
                 pwchLetter[0] += (L'b' - L'a');
             } while (L'a' <= pwchLetter[0] && L'z' >= pwchLetter[0]);
+
+            if (!bFind)
+            {
+                if (12 <= wcslen(pwchPath)
+                    && 0 == _wcsnicmp(pwchPath, L"\\Device\\Mup", 11))
+                {
+                    MoveMemory(pwchPath + 1, pwchPath + 11, (wcslen(pwchPath) - 10) * sizeof(WCHAR));
+                    break;
+                }
+            }
         }
     } while (FALSE);
 
